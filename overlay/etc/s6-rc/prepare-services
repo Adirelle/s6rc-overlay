@@ -11,7 +11,7 @@ if { /etc/s6-rc/make-entrypoint-oneshot /entrypoint.d $INTER }
 if { /etc/s6-rc/make-services-bundle $SRC $INTER }
 wait -r { }
 s6-progress "Compiling the service database"
-if { s6-rc-compile -v1 -u 0,40000 -g 0,40000 -h nobody $DEST $INTER }
+if { s6-rc-compile -v 1 $DEST $INTER }
 if { s6-rmrf $INTER }
 if { ln -snf $DEST /etc/s6-rc/compiled }
 $@
