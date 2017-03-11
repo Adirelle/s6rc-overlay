@@ -1,0 +1,6 @@
+#!/bin/execlineb -P
+backtick -nD 255 EXITCODE { redirfd -r 0 .exitcode s6-cat }
+import -u EXITCODE
+s6-progress "Terminating processes"
+foreground { s6-nuke -t }
+exit $EXITCODE

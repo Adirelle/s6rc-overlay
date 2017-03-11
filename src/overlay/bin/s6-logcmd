@@ -1,0 +1,38 @@
+#!/bin/execlineb -S0
+backtick -n _PREFIX { s6-logprefix }
+fdreserve 2
+multisubstitute {
+    import -u _PREFIX
+    importas -u ORIG_STDOUT FD0
+    importas -u ORIG_STDERR FD1
+}
+
+fdmove $ORIG_STDOUT 1
+fdmove $ORIG_STDERR 2
+
+pipeline -w {
+    fdmove 1 $ORIG_STDOUT
+    s6-format-filter "%1 \27[31m%s\27[0m" $_PREFIX
+}
+fdmove 2 1
+
+pipeline -w {
+    fdmove 1 $ORIG_STDERR
+    s6-format-filter "%1 %s" $_PREFIX
+}
+
+foreground {
+    s6-echo "\27[33mRunning command:" $@ "\27[0m"
+}
+unexport ?
+
+foreground { $@ }
+importas -u EXITCODE ?
+
+ifthenelse
+    { s6-test $EXITCODE -eq 0 }
+    { s6-echo "\27[32mSuccess\27[0m" }
+    { s6-echo "\27[31mFailed (${EXITCODE})\27[0m" }
+
+
+exit $EXITCODE

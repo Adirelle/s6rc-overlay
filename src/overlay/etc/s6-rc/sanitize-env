@@ -1,0 +1,26 @@
+#!/bin/execlineb -S0
+backtick -n __TMPLAUNCHENV { s6-uniquename /tmp/.launch-env }
+importas -u TMP __TMPLAUNCHENV
+importas -i USERHOME HOME
+
+if { s6-mkdir -p -m 0755 $TMP }
+if { s6-dumpenv ${TMP}/env }
+if { /etc/s6-rc/dump-user-env ${TMP}/user }
+
+gosu root:root
+exec -c
+/bin/export PATH /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
+cd /
+
+if { /etc/s6-rc/clear-run }
+
+export S6_LAUNCH_ENV /run/container-launch
+importas LAUNCH_ENV S6_LAUNCH_ENV
+
+if { mv $TMP $LAUNCH_ENV }
+if { ln -snf ${LAUNCH_ENV}/env ${USERHOME}/.envdir }
+if { s6-dumpenv /root/.envdir }
+if { chown -R root:root $LAUNCH_ENV }
+if { chmod -R a+rX,go-w $LAUNCH_ENV }
+if { /etc/s6-rc/clear-tmp }
+$@

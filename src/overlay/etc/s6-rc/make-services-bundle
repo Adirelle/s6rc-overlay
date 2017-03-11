@@ -1,0 +1,9 @@
+#!/bin/execlineb
+multisubstitute {
+    importas -i SRC 1
+    importas -i DEST 2
+}
+s6-progress "Creating the services bundle"
+if { s6-mkdir -p ${DEST}/services }
+if { redirfd -w 1 ${DEST}/services/contents s6-ls ${SRC} }
+redirfd -w 1 ${DEST}/services/type s6-echo bundle

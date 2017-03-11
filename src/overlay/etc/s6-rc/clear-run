@@ -1,0 +1,4 @@
+#!/bin/execlineb -P
+if { s6-rmrf /run }
+if { s6-mkdir -p -m 0755 /run }
+s6-mkdir -p -m 0755 /run/lock

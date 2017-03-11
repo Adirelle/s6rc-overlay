@@ -1,0 +1,22 @@
+#!/bin/execlineb -S1
+if { s6-mkdir -p -m 0755 ${1} }
+if {
+    getcwd __WORKDIR
+    importas -u WORKDIR __WORKDIR
+    redirfd -w 1 ${1}/WORKDIR
+    s6-echo $WORKDIR
+}
+if {
+    redirfd -w 1 ${1}/UID
+    id -u
+}
+if {
+    redirfd -w 1 ${1}/GID
+    id -g
+}
+if { 
+    redirfd -w 1 ${1}/GIDLIST
+    pipeline { id -G }
+    tr " " ,
+}
+wait -r { }

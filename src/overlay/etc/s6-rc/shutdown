@@ -1,0 +1,6 @@
+#!/bin/execlineb
+importas -uD -t MODE 1
+s6-progress "Stopping services"
+foreground { s6-rc -v1 -t 2000 -ad change }
+s6-progress "Stopping service supervisor"
+s6-svscanctl -s $MODE /run/scandir

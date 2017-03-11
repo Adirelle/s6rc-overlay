@@ -1,0 +1,4 @@
+#!/bin/execlineb -S0
+s6-progress "Executing command"
+with-contenv -a
+$@

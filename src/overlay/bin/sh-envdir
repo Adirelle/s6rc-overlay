@@ -1,0 +1,13 @@
+#!/bin/execlineb
+importas -i ENVDIR 1
+if -t { s6-test -d ${ENVDIR}/. }
+forbacktickx -0 __NAME { s6-ls -0 $ENVDIR }
+    importas -u NAME __NAME
+    importas -D "" CURRENT $NAME
+    if -t { s6-test -z $CURRENT }
+    if { s6-echo -n export ${NAME}= }
+    if {
+        redirfd -r 0 ${ENVDIR}/${NAME}
+        s6-quote-filter -d '
+    }
+    s6-echo

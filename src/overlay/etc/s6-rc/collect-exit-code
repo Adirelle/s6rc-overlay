@@ -1,0 +1,11 @@
+#!/bin/execlineb -S0
+foreground { $@ }
+multisubstitute {
+    importas -u EXITCODE ?
+    importas SCANDIR S6_SCANDIR
+}
+foreground {
+    redirfd -w 1 ${SCANDIR}/.exitcode
+    s6-echo $EXITCODE
+}
+s6-svscanctl -t $SCANDIR

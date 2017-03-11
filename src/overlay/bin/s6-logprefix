@@ -1,0 +1,17 @@
+#!/bin/execlineb -S0
+define FILE /run/logseq
+gosu root:root
+s6-setlock -w ${FILE}.lock
+backtick -nD 0 PREV {
+    if { s6-test -r $FILE }
+    redirfd -r 0 $FILE
+    s6-cat
+}
+import -u PREV
+backtick -n CUR { s6-expr $PREV + 1 }
+import -u CUR
+foreground {
+    redirfd -w 1 $FILE
+    s6-echo $CUR
+}
+printf "%02d>" $CUR

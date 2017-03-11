@@ -1,0 +1,9 @@
+#!/bin/execlineb -S0
+ifelse { s6-test $# -eq 0 } {
+    s6-progress "Waiting forever"
+    foreground { s6-pause }
+    exit 0
+}
+foreground {
+    /etc/s6-rc/run-in-contenv $@
+}

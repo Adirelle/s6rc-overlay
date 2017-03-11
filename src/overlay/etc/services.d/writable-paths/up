@@ -1,0 +1,24 @@
+import-launch-var WRITABLE_PATHS
+import-launch-var WRITABLE_USER
+multisubstitute {
+    import -sD "" WRITABLE_PATHS
+    importas -D "" UNSPLITTED WRITABLE_PATHS
+    import -D "" WRITABLE_USER
+}
+if -t { s6-test -n $UNSPLITTED -a -n $WRITABLE_USER }
+foreground { s6-progress "Making ${UNSPLITTED} writable for ${WRITABLE_USER}" }
+with-contenv -w
+forx -p TARGET { $WRITABLE_PATHS }
+    import -u TARGET
+    if -nt {
+        s6-setuidgid $WRITABLE_USER
+        s6-test -w ${TARGET}
+    }
+    foreground {
+        if -nt { s6-test -e ${TARGET} }
+        s6-setuidgid $WRITABLE_USER
+        s6-logcmd
+        s6-mkdir -p ${TARGET}
+    }
+    s6-logcmd
+    setfacl -R -m u:${WRITABLE_USER}:rwX -m d:u:${WRITABLE_USER}:rwX ${TARGET}

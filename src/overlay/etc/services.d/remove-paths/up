@@ -1,0 +1,16 @@
+import-launch-var REMOVE_PATHS
+multisubstitute {
+    import -s REMOVE_PATHS
+    importas -D "" UNSPLITTED REMOVE_PATHS
+}
+if -t { s6-test -n $UNSPLITTED }
+foreground { s6-progress "Removing ${UNSPLITTED}" }
+with-contenv -w
+forx -p GLOB { $REMOVE_PATHS }
+    import -u GLOB
+    elglob -0 TARGETS $GLOB
+    forx -p TARGET { $TARGETS }
+        import -u TARGET
+        if -t { s6-test -e $TARGET }
+        s6-logcmd
+        s6-rmrf $TARGET

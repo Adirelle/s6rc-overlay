@@ -1,0 +1,8 @@
+#!/bin/execlineb -s1
+foreground {
+    fdmove -c 1 2
+    s6-echo "\27[32m==== ${1} ====\27[0m"
+}
+unexport ?
+if -t { s6-test $# -gt 0 }
+$@

@@ -1,0 +1,4 @@
+#!/bin/execlineb -P
+forbacktickx -p -0 FILE { s6-ls -0 -a /tmp }
+import -u FILE
+s6-rmrf /tmp/$FILE

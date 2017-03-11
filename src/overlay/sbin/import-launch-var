@@ -1,0 +1,4 @@
+#!/bin/execlineb -s1
+importas -i __LAUNCH_ENV S6_LAUNCH_ENV
+s6-readvar ${__LAUNCH_ENV}/env $1
+$@
