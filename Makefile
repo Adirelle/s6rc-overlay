@@ -46,18 +46,11 @@ s6-rc_configure = $(CONFIGURE_COMMON_BIN)
 s6-rc_target = s6-rc/libs6rc.a.xyzzy
 s6-rc_package = $(PACKAGE_DIR)/admin/s6-rc-$(s6-rc_version)
 
-.PHONY: all clean distclean packages
+.PHONY: all clean distclean packages overlay
 
-all: packages
+all: packages overlay
 	
 packages: $(foreach PKG,$(PACKAGES),$($(PKG)_package))
-
-clean:
-	for PKG in $(PACKAGES); do $(MAKE) -C $$PKG clean; done
-	rm -rf $(OUTPUT)
-
-distclean: clean
-	for PKG in $(PACKAGES); do $(MAKE) -C $$PKG distclean; done
 
 define PACKAGE_TEMPLATE =
 $(1)/config.mak: $(1)/configure $($(1)_deps)
@@ -72,3 +65,20 @@ $($(1)_package): $($(1)_target)
 endef
 
 $(foreach PKG,$(PACKAGES),$(eval $(call PACKAGE_TEMPLATE,$(PKG))))
+
+BINARIES=$(foreach BIN,$(wildcard $(PACKAGE_DIR)/*/*/command/*),$(basename $(BIN)))
+
+tests:
+	echo $(wildcard $(PACKAGE_DIR)/*/*/command/*)
+
+overlay: $(OUTPUT)/rootfs/docker-init $(addprefix $(OUTPUT)/rootfs/bin/,$(BINARIES))
+
+$(OUTPUT)/rootfs/docker-init:
+	cp -r overlay $(OUTPUT)/rootfs 
+
+clean:
+	for PKG in $(PACKAGES); do $(MAKE) -C $$PKG clean; done
+	rm -rf $(OUTPUT)
+
+distclean: clean
+	for PKG in $(PACKAGES); do $(MAKE) -C $$PKG distclean; done
