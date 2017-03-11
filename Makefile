@@ -58,11 +58,11 @@ $(ARCHIVE): $(ROOTFS)/docker-init $(foreach PKG,$(PACKAGES),$($(PKG)_package))
 	cd $(ROOTFS) && tar caf $(ARCHIVE) --exclude=usr/include --exclude=usr/lib --owner=root --group=root --no-acls *
 
 $(ARCHIVE).sha512: $(ARCHIVE)
-	sha512sum $< > $@
+	cd $(<D) && sha512sum $(<F) > $(@F)
 
 overlay: $(ROOTFS)/docker-init | packages
 
-$(ROOTFS)/docker-init: | $(ROOTFS)
+$(ROOTFS)/docker-init: overlay/docker-init | $(ROOTFS)
 	cp -r overlay/* $(ROOTFS)
 
 $(ROOTFS):
