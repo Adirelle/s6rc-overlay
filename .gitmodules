@@ -1,0 +1,15 @@
+[submodule "src/skalibs"]
+	path = src/skalibs
+	url = https://github.com/skarnet/skalibs.git
+[submodule "src/execline"]
+	path = src/execline
+	url = https://github.com/skarnet/execline.git
+[submodule "src/s6"]
+	path = src/s6
+	url = https://github.com/skarnet/s6.git
+[submodule "src/s6-rc"]
+	path = src/s6-rc
+	url = https://github.com/skarnet/s6-rc.git
+[submodule "src/s6-portable-utils"]
+	path = src/s6-portable-utils
+	url = https://github.com/skarnet/s6-portable-utils.git
