@@ -5,7 +5,7 @@ env:
   - TARGET_ARCH=amd64
 
 script:
-  - ./build.sh $TARGET_ARCH ${TRAVIS_TAG:-${TRAVIS_BRANCH}}
+  - make ARCH=$TARGET_ARCH TAG=${TRAVIS_TAG:-${TRAVIS_BRANCH}}
 
 deploy:
   provider: releases
