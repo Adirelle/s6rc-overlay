@@ -53,7 +53,7 @@ tests/archive.tar.bz2: $(ARTIFACT)
 $(ARTIFACT).sha512: $(ARTIFACT)
 	cd $(<D) && sha512sum $(<F) >../$@
 
-$(ARTIFACT): $(CACHE)/gosu $(addprefix $(OVERLAY)/,$(OVERLAY_FILES)) $(SKAWARE_TARS) | $(BUILD)
+$(ARTIFACT): $(CACHE)/gosu $(addprefix $(OVERLAY)/,$(OVERLAY_FILES)) $(SKAWARE_ARCHIVES) | $(BUILD)
 	rm -rf $(ROOT)
 	cp -a $(OVERLAY) $(ROOT)
 	cp $(CACHE)/gosu $(ROOT)/bin/gosu && chmod 4555 $(ROOT)/bin/gosu
