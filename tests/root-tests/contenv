@@ -1,0 +1,29 @@
+#!/bin/execlineb -P
+export FOO BAR
+
+if {
+    with-contenv 
+    if {
+        import -D "" FOO
+        s6-logcmd
+        s6-test $FOO = BAR
+    }
+    /root-tests/iAmRoot
+}
+
+if {
+    with-contenv -a
+    if {
+        import -D "" FOO
+        s6-logcmd
+        s6-test -z $FOO
+    }
+    /user-tests/iAmDaemon
+}
+
+if {
+    with-contenv -d
+    s6-logcmd
+    s6-test $LAUNCH_ENV != \\$LAUNCH_ENV
+}
+

@@ -1,11 +1,14 @@
 language: c
-sudo: false
+sudo: required
+
+services:
+  - docker
 
 env:
   - TARGET_ARCH=amd64
 
 script:
-  - make ARCH=$TARGET_ARCH TAG=${TRAVIS_TAG:-${TRAVIS_BRANCH}}
+  - make ARCH=$TARGET_ARCH TAG=${TRAVIS_TAG:-${TRAVIS_BRANCH}} all tests
 
 deploy:
   provider: releases
@@ -22,5 +25,6 @@ deploy:
 cache:
   directories:
     - cache
+    - build
 
 # vim: expandtab sw=2 sts=2

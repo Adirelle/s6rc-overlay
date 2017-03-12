@@ -1,0 +1,24 @@
+#!/bin/execlineb -P
+if {
+    getcwd CWD
+    import CWD
+    s6-logcmd
+    s6-test $CWD = /tmp
+}
+if {
+    backtick -n USER { id -un }
+    import USER
+    s6-logcmd
+    s6-test $USER = daemon
+}
+if {
+    backtick -n GRP { id -gn }
+    import GRP
+    s6-logcmd
+    s6-test $GRP = daemon
+}
+if {
+    import -D "" BAR
+    s6-logcmd
+    s6-test $BAR = FOO
+}

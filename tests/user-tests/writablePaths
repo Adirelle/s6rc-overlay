@@ -1,0 +1,4 @@
+#!/bin/execlineb -p
+import -i WRITABLE_PATHS
+s6-logcmd
+s6-touch ${WRITABLE_PATHS}/test
