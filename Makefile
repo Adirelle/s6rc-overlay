@@ -37,7 +37,7 @@ TEST_RESULTS = $(addprefix $(BUILD)/test-result-,$(IMAGE_TAGS))
 
 .PHONY: all clean distclean images test
 
-all: artifacts images test
+all: artifacts
 
 $(CACHE)/manifest.txt: | $(CACHE)
 	$(CURL) -o $@ $(SKAWARE_SOURCE)/manifest.txt

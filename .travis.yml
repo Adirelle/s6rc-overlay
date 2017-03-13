@@ -5,10 +5,13 @@ services:
   - docker
 
 env:
-  - TARGET_ARCH=amd64
+  - ARCH=amd64
 
 script:
-  - make ARCH=$TARGET_ARCH TAG=${TRAVIS_TAG:-${TRAVIS_BRANCH}} all tests
+  - export TAG=${TRAVIS_TAG:-${TRAVIS_BRANCH}}
+  - make
+  - make images
+  - make test
 
 deploy:
   provider: releases
