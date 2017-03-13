@@ -1,3 +1,4 @@
 /build
 /cache
-tests/archive.tar.bz2
+/docker/base/archive.tar.bz2
+/docker/tests/Dockerfile.*
