@@ -5,5 +5,5 @@ ifelse { s6-test $# -eq 0 } {
     exit 0
 }
 foreground {
-    /etc/s6-rc/run-in-contenv $@
+    /libexec/s6-rc/run-in-contenv $@
 }

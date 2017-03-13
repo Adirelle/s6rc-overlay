@@ -2,5 +2,5 @@ FROM debian:jessie
 
 ADD archive.tar.bz2 /
 
-ENTRYPOINT ["/docker-init"]
+ENTRYPOINT ["/sbin/container-init"]
 

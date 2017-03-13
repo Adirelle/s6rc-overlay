@@ -1,0 +1,15 @@
+#!/bin/execlineb -P
+importas DEST S6_COMPILED
+if -nt { s6-test -e $DEST }
+backtick -n INTER { s6-uniquename /run/s6rc-source }
+multisubstitute {
+    importas -i SRC S6_SERVICES_D
+    importas -D 0 V S6_VERBOSITY
+    import -u INTER
+}
+if { s6-hiercopy $SRC $INTER }
+if { /libexec/s6-rc/make-services-bundle $SRC $INTER }
+wait -r { }
+s6-progress "Compiling the service database"
+if { s6-rc-compile -v $V $DEST $INTER }
+s6-rmrf $INTER

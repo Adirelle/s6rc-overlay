@@ -1,0 +1,6 @@
+#!/bin/execlineb -S0
+/libexec/s6-rc/sanitize-env
+if { /libexec/s6-rc/prepare-services }
+/libexec/s6-rc/start-services
+/libexec/s6-rc/run-command
+$@

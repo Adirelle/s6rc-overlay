@@ -1,22 +1,21 @@
 #!/bin/execlineb -S0
-export S6_SCANDIR /run/scandir
 multisubstitute {
-    define SRC /etc/s6-rc/scandir
-    importas SCANDIR S6_SCANDIR
+    importas -i SCANDIR S6_SCANDIR
+    importas -D 0 V S6_VERBOSITY
 }
 
 if { s6-rmrf $SCANDIR }
-if { s6-hiercopy $SRC $SCANDIR }
+if { s6-hiercopy /etc/s6-rc/scandir $SCANDIR }
 if { s6-mkfifo ${SCANDIR}/.s6-svscan/control }
 
 background {
     redirfd -w 3 ${SCANDIR}/.s6-svscan/control
     fdclose 3
 
-    /etc/s6-rc/collect-exit-code
+    /libexec/s6-rc/collect-exit-code
     s6-progress "Starting services"
     if { s6-rc-init -t 1000 $SCANDIR }
-    if { s6-rc -t 300000 -v 1 -u change services }
+    if { s6-rc -t 300000 -v $V -u change services }
     $@
 }
 unexport !

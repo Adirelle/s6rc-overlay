@@ -1,0 +1,10 @@
+#!/bin/execlineb
+multisubstitute {
+    importas -uD -t MODE 1
+    importas -i SCANDIR S6_SCANDIR
+    importas -D 0 V S6_VERBOSITY
+}
+s6-progress "Stopping services"
+foreground { s6-rc -v $V -t 2000 -ad change }
+s6-progress "Stopping service supervisor"
+s6-svscanctl -s $MODE $SCANDIR
