@@ -2,7 +2,6 @@
 ADD root-tests /root-tests
 ADD user-tests /user-tests
 ADD services.d/root-tests /etc/services.d/root-tests
-ADD entrypoint.d /entrypoint.d/
 
 RUN echo 2 >/etc/s6-rc/env/S6_VERBOSITY
 
