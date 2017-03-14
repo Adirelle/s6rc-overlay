@@ -21,6 +21,7 @@ ENV S6RC_VERSION 0.0.1
 ADD https://github.com/Adirelle/s6rc-overlay/releases/download/v${S6RC_VERSION}/s6rc-overlay-v${S6RC_VERSION}-amd64.tar.bz2 /tmp/s6rc-overlay.tar.bz2
 RUN tar xfa /tmp/s6rc-overlay.tar.bz2 -C / 
 &&  rm /tmp/s6rc-overlay.tar.bz2
+ENTRYPOINT ["/sbin/container-init"]
 ```
 
 Documentation
