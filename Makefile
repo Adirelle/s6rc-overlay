@@ -35,7 +35,7 @@ IMAGE_TAGS = $(patsubst $(DOCKER)/Dockerfile.%,%,$(wildcard $(DOCKER)/Dockerfile
 IMAGES = $(addprefix $(BUILD)/image-,$(IMAGE_TAGS))
 TEST_RESULTS = $(addprefix $(BUILD)/test-result-,$(IMAGE_TAGS))
 
-.PHONY: all clean distclean images test
+.PHONY: all clean clean-root distclean images test
 
 all: artifacts
 
@@ -45,16 +45,25 @@ $(CACHE)/manifest.txt: | $(CACHE)
 distclean: clean
 	rm -rf $(CACHE)
 
-clean:
+clean: clean-root
 	rm -rf $(BUILD) $(TESTS)/archive.tar.bz2 $(addprefix $(TESTS)/Dockerfile.,$(IMAGE_TAGS))
+
+clean-root:
+	-chmod -R u+w $(ROOT)
+	rm -rf $(ROOT)
 
 artifacts: $(ARTIFACT) $(ARTIFACT).sha512
 
-$(ARTIFACT): $(CACHE)/gosu $(addprefix $(OVERLAY)/,$(OVERLAY_FILES)) $(SKAWARE_ARCHIVES) | $(BUILD)
-	rm -rf $(ROOT)
+$(ARTIFACT): $(CACHE)/gosu $(addprefix $(OVERLAY)/,$(OVERLAY_FILES)) $(SKAWARE_ARCHIVES) | clean-root $(BUILD)
 	cp -a $(OVERLAY) $(ROOT)
-	cp $(CACHE)/gosu $(ROOT)/bin/gosu && chmod 4555 $(ROOT)/bin/gosu
+	cp $(CACHE)/gosu $(ROOT)/bin/gosu
 	for A in $(SKAWARE_ARCHIVES); do tar xaf $$A -C $(ROOT); done
+	-setfacl -bR $(ROOT)
+	find $(ROOT) -type d | xargs chmod 0755
+	chmod 0500 $(ROOT)/sbin/* $(ROOT)/libexec/*
+	chmod 0555 $(ROOT)/bin/* $(ROOT)/sbin/container-init $(ROOT)/etc/s6-rc/scandir/.s6-svscan/* $(ROOT)/libexec/s6-rc $(ROOT)/libexec/s6-rc/*
+	chmod 0500 $(ROOT)/bin/s6-setuidgid
+	chmod 4555 $(ROOT)/bin/gosu
 	tar caf $@ -C $(ROOT) --owner=0 --group=0 .
 
 $(CACHE)/gosu: | $(CACHE)
@@ -81,6 +90,7 @@ $(DOCKER)/archive.tar.bz2: $(ARTIFACT)
 test: $(TEST_RESULTS)
 
 $(TEST_RESULTS): $(BUILD)/test-result-%: $(TESTS)/Dockerfile.% $(BUILD)/image-% $(shell find $(TESTS) -type f)
+	chmod -R a+rX $(TESTS)
 	docker build -t test-$* -f $< $(<D)
 	docker run --rm test-$*
 	touch $@
