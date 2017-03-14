@@ -3,7 +3,7 @@ multisubstitute {
     importas -i SRC 1
     importas -i DEST 2
 }
-s6-progress "Creating the services bundle"
+s6-notice "Creating the services bundle"
 if { s6-mkdir -p ${DEST}/services }
 if {
     redirfd -w 1 ${DEST}/services/contents

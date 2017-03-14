@@ -13,7 +13,7 @@ background {
     fdclose 3
 
     /libexec/s6-rc/collect-exit-code
-    s6-progress "Starting services"
+    s6-notice "Starting services"
     if { s6-rc-init -t 1000 $SCANDIR }
     if { s6-rc -t 300000 -v $V -u change services }
     $@
@@ -21,5 +21,5 @@ background {
 unexport !
 
 redirfd -r 0 /dev/null
-s6-progress "Starting service supervisor"
+s6-notice "Starting service supervisor"
 s6-svscan -st0 $SCANDIR

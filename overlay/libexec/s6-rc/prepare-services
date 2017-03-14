@@ -10,6 +10,6 @@ multisubstitute {
 if { s6-hiercopy $SRC $INTER }
 if { /libexec/s6-rc/make-services-bundle $SRC $INTER }
 wait -r { }
-s6-progress "Compiling the service database"
+s6-notice "Compiling the service database"
 if { s6-rc-compile -v $V $DEST $INTER }
 s6-rmrf $INTER

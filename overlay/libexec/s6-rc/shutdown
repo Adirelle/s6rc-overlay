@@ -4,7 +4,7 @@ multisubstitute {
     importas -i SCANDIR S6_SCANDIR
     importas -D 0 V S6_VERBOSITY
 }
-s6-progress "Stopping services"
+s6-notice "Stopping services"
 foreground { s6-rc -v $V -t 2000 -ad change }
-s6-progress "Stopping service supervisor"
+s6-notice "Stopping service supervisor"
 s6-svscanctl -s $MODE $SCANDIR
