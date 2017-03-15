@@ -1,25 +1,27 @@
 #!/bin/execlineb -S0
 multisubstitute {
-    importas -i SCANDIR S6_SCANDIR
-    importas -D 0 V S6_VERBOSITY
+    import -i S6_RUN_DIR
+    import -i S6_COMPILED_DIR
+    import -i S6_LIVE_DIR
+    import -i S6_VERBOSITY
+    import -i S6_INIT_TIMEOUT
+    import -i S6_START_TIMEOUT
 }
 
-if { s6-rmrf $SCANDIR }
-if { s6-hiercopy /etc/s6-rc/scandir $SCANDIR }
-if { s6-mkfifo ${SCANDIR}/.s6-svscan/control }
+if { s6-mkfifo ${S6_SCAN_DIR}/.s6-svscan/control }
 
 background {
-    redirfd -w 3 ${SCANDIR}/.s6-svscan/control
+    redirfd -w 3 ${S6_SCAN_DIR}/.s6-svscan/control
     fdclose 3
 
     /libexec/s6-rc/collect-exit-code
     s6-notice "Starting services"
-    if { s6-rc-init -t 1000 $SCANDIR }
-    if { s6-rc -t 300000 -v $V -u change services }
+    if { s6-rc-init -t $S6_INIT_TIMEOUT -c $S6_COMPILED_DIR -l $S6_LIVE_DIR $S6_SCAN_DIR }
+    if { s6-rc -t $S6_START_TIMEOUT -l $S6_LIVE_DIR -v $S6_VERBOSITY -u change services }
     $@
 }
 unexport !
 
 redirfd -r 0 /dev/null
 s6-notice "Starting service supervisor"
-s6-svscan -st0 $SCANDIR
+s6-svscan -st0 $S6_SCAN_DIR

@@ -1,10 +1,14 @@
 #!/bin/execlineb
 multisubstitute {
     importas -uD -t MODE 1
-    importas -i SCANDIR S6_SCANDIR
-    importas -D 0 V S6_VERBOSITY
+    importas -i S6_LIVE_DIR
+    importas -i S6_SCAN_DIR
+    importas -i S6_STOP_TIMEOUT
+    importas -i S6_VERBOSITY
 }
+define LIVE_DIR ${S6_RUN_DIR}/live
+
 s6-notice "Stopping services"
-foreground { s6-rc -v $V -t 2000 -ad change }
-s6-notice "Stopping service supervisor"
-s6-svscanctl -s $MODE $SCANDIR
+foreground { s6-rc -l $S6_LIVE_DIR -v $S6_VERBOSITY -t $S6_STOP_TIMEOUT -ad change }
+s6-notice "Stopping service supevisor"
+s6-svscanctl -s $MODE $S6_SCAN_DIR

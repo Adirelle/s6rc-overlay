@@ -2,10 +2,10 @@
 foreground { $@ }
 multisubstitute {
     importas -u EXITCODE ?
-    importas SCANDIR S6_SCANDIR
+    import -i S6_SCAN_DIR
 }
 foreground {
-    redirfd -w 1 ${SCANDIR}/.exitcode
+    redirfd -w 1 ${S6_SCAN_DIR}/.exitcode
     s6-echo $EXITCODE
 }
-s6-svscanctl -t $SCANDIR
+s6-svscanctl -t ${S6_SCAN_DIR}
