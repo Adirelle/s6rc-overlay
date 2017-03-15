@@ -85,6 +85,6 @@ $(TEST_RESULTS): $(BUILD)/test-result-%: $(TESTS)/Dockerfile.% $(BUILD)/image-% 
 	docker run --rm test-$*
 	touch $@
 
-$(TESTS)/Dockerfile.%: $(TESTS)/suffix.Dockerfile
+$(TESTS)/Dockerfile.%: $(TESTS)/template.Dockerfile
 	echo "FROM $(IMAGE_SLUG):$*" | cat - $< >$@
 
