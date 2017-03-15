@@ -29,12 +29,12 @@ ENTRYPOINT ["/sbin/container-init"]
 Running process
 ---------------
 
-1. When starting, s6rc-overlay entrypoint extracts its configuration variables from the environment, backup the other variables, as well as the current user and working directory, then gain root privileges to continue.
+1. When starting, s6rc-overlay entrypoint extracts its configuration variables from the environment, backup the other variables, as well as the current user and working directory, then clear all variables and gain root privileges.
 2. It removes everything in both `/tmp` and `/run` and installs its working directory in `/run/s6-rc`.
-3. If there is no precompiled service database, it creates one from `/etc/services.d`.
-4. It tries to bring up the main service, which should depends on all the actual services to start.
+3. If there is no precompiled service database, it compiles one from `/etc/services.d`.
+4. It tries to bring up the target service, which should depends on the actual services to start.
 5. Once all the services are started:
-    1. If command line has been given, it restores the initial environment (user, working directory, variables) and runs it.
+    1. If command line has been given, it restores the initial environment (user, working directory, variables) and executes it.
     2. Else it waits forever until some signal is received.
 6. s6rc-overlay regains the control as root, then tries to bring down the services.
 7. It sends a SIGTERM signal to all remaining processes and waits 2 seconds.
@@ -45,11 +45,13 @@ Services
 
 ### Service database
 
-You can provide a precompiled service database in /etc/s6-rc/compiled or let s6rc-overlay compile it from service definitions in /etc/services.d.
+You can provide a precompiled service database in `/etc/s6-rc/compiled` or let s6rc-overlay compile it from service definitions in `/etc/services.d`. See the [s6-rc-compile documentation](http://skarnet.org/software/s6-rc/s6-rc-compile.html) about service definition format.
 
 ### Default services
 
-s6rc-overlay comes with the following default services. They are defined in the /etc/services.d directory and are configured through environment variables.
+s6rc-overlay comes with the following default services. They are defined in the `/etc/services.d` directory and can be configured using environment variables. 
+
+**Note:** in case you provided precompiled service database, these services would not be available.
 
 #### `remove-paths`
 
@@ -57,13 +59,13 @@ Recursively removes all files and directories matching `REMOVE_PATHS`. Does noth
 
 #### `writable-paths`
 
-Recursively gives write permissions to `WRITABLE_USER` on all files and directories matching `WRITABLE_PATHS`. It does nothing if any of these variables is undefined.
+Recursively gives write permissions to `WRITABLE_USER` on all files and directories matching `WRITABLE_PATHS`, using `setfacl`. Does nothing if any of these variables is undefined.
 
 It depends on `remove-paths`.
 
 #### `init`
 
-A simple bundle that references `writable-paths`. It can be used at synchronisation point before launching longruns. You can add other services to wait to with a single command:
+A simple bundle that references `writable-paths`. It can be used as a synchronisation point before launching longruns. One can add other services to wait to with a single command:
 
 ```
 echo my_other_service >> /etc/services.d/init/contents
@@ -71,12 +73,12 @@ echo my_other_service >> /etc/services.d/init/contents
 
 #### `services`
 
-This service is dynamically added by s6rc-overlay on compilation. This is a simple bundle that lists every services in /etc/services.d to ensure they are all started.
+This service is dynamically added by s6rc-overlay on compilation. This is a simple bundle that lists every services in `/etc/services.d` to ensure they are all started.
 
 Configuration
 -------------
 
-He is a list of environment variables that can be used to alter s6rc-overlay behavior:
+He is a list of environment variables to alter s6rc-overlay behavior:
 
 `S6_VERBOSITY`: the verbosity of various s6-rc commands. Defaults to 1.
 
@@ -91,6 +93,11 @@ He is a list of environment variables that can be used to alter s6rc-overlay beh
 `S6_CONF_DIR`: the path to the initial configuration of s6rc-overlay. Defaults to `/etc/s6-rc`.
 
 `S6_RUN_DIR`: the path to the working directory of s6rc-overlay. Defaults to `/run/s6-rc`.
+
+Security concerns
+-----------------
+
+s6rc-overlay uses `gosu` : it is required for privilege escalation in the container during startup, but it can also be exploited by malicious code.
 
 Components
 ----------
