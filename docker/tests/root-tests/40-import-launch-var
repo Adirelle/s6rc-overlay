@@ -1,0 +1,14 @@
+#!/bin/execlineb -P
+
+if {
+    import -D "" BAR
+    s6-logcmd
+    s6-test -z $BAR
+}
+
+if {
+    import-launch-var BAR
+    import -D "" BAR
+    s6-logcmd
+    s6-test $BAR = FOO
+}

@@ -7,7 +7,7 @@ if {
 }
 
 if {
-    foreground { s6-logcmd exit 5 }
+    foreground { s6-logcmd foreground { s6-echo This must fail } exit 5 }
     importas -u ACTUAL ?
     s6-test $ACTUAL -eq 5
 }
