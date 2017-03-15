@@ -1,0 +1,14 @@
+#!/bin/execlineb -P
+
+if {
+    foreground { s6-logcmd exit 0 }
+    importas -u ACTUAL ?
+    s6-test $ACTUAL -eq 0
+}
+
+if {
+    foreground { s6-logcmd exit 5 }
+    importas -u ACTUAL ?
+    s6-test $ACTUAL -eq 5
+}
+
