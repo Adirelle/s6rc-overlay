@@ -9,6 +9,7 @@ set -ex
 cp -a $OVERLAY $ROOT
 cp $CACHE/gosu $ROOT/libexec/gosu
 for A in $@; do tar xaf $A -C $ROOT; done
+mkdir -p $ROOT/etc/services.d
 setfacl -bR $ROOT || true
 find $ROOT -type d | xargs chmod 0755
 chmod 0500 $ROOT/sbin/*
