@@ -1,0 +1,10 @@
+#!/bin/execlineb
+multisubstitute {
+    importas -i S6_COMPILED_DIR 1
+    importas -i SOURCE_DIR 2
+    importas -i SERVICE_DIR 3
+    import -i S6_VERBOSITY
+}
+if { /libexec/s6-rc/make-service-bundle $SERVICE_DIR $SOURCE_DIR }
+s6-notice "Compiling the service database"
+s6-rc-compile -v $S6_VERBOSITY $S6_COMPILED_DIR $SOURCE_DIR $SERVICE_DIR

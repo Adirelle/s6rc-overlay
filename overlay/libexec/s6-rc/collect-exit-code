@@ -1,5 +1,9 @@
-#!/bin/execlineb -S0
-foreground { $@ }
+#!/bin/execlineb
+foreground {
+    elgetpositionals
+    emptyenv -P
+    $@
+}
 multisubstitute {
     importas -u EXITCODE ?
     import -i S6_SCAN_DIR

@@ -3,6 +3,7 @@ ADD root-tests /root-tests
 ADD user-tests /user-tests
 ADD services.d/root-tests /etc/services.d/root-tests
 
+ENV S6_VERBOSITY 3
 USER daemon
 WORKDIR /tmp
 CMD run-parts --exit-on-error /user-tests

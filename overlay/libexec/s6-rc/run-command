@@ -1,9 +1,10 @@
-#!/bin/execlineb -S0
+#!/bin/execlineb
 ifelse { s6-test $# -eq 0 } {
     s6-notice "Waiting forever"
     foreground { s6-pause }
     exit 0
 }
-foreground {
-    /libexec/s6-rc/run-in-contenv $@
-}
+elgetpostionals
+/libexec/s6-rc/run-in-contenv
+$@
+
