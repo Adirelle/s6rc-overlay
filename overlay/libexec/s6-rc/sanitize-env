@@ -7,7 +7,7 @@ if { s6-mkdir -p -m 0755 $TMP }
 if { s6-dumpenv ${TMP}/env }
 if { /libexec/s6-rc/dump-user-env ${TMP}/user }
 
-gosu root:root
+/libexec/gosu root:root
 exec -c
 /bin/export PATH /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
 cd /

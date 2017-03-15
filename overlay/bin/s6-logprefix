@@ -1,6 +1,6 @@
 #!/bin/execlineb -S0
 define FILE /run/logseq
-gosu root:root
+/libexec/gosu root:root
 s6-setlock -w ${FILE}.lock
 backtick -nD 0 PREV {
     if { s6-test -r $FILE }

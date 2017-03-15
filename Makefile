@@ -55,16 +55,7 @@ clean-root:
 artifacts: $(ARTIFACT) $(ARTIFACT).sha512
 
 $(ARTIFACT): $(CACHE)/gosu $(addprefix $(OVERLAY)/,$(OVERLAY_FILES)) $(SKAWARE_ARCHIVES) | clean-root $(BUILD)
-	cp -a $(OVERLAY) $(ROOT)
-	cp $(CACHE)/gosu $(ROOT)/bin/gosu
-	for A in $(SKAWARE_ARCHIVES); do tar xaf $$A -C $(ROOT); done
-	-setfacl -bR $(ROOT)
-	find $(ROOT) -type d | xargs chmod 0755
-	chmod 0500 $(ROOT)/sbin/* $(ROOT)/libexec/*
-	chmod 0555 $(ROOT)/bin/* $(ROOT)/sbin/container-init $(ROOT)/etc/s6-rc/scandir/.s6-svscan/* $(ROOT)/libexec/s6-rc $(ROOT)/libexec/s6-rc/*
-	chmod 0500 $(ROOT)/bin/s6-setuidgid
-	chmod 4555 $(ROOT)/bin/gosu
-	tar caf $@ -C $(ROOT) --owner=0 --group=0 .
+	tools/mkartifact $@ $(ROOT) $(CACHE) $(OVERLAY) $(SKAWARE_ARCHIVES)
 
 $(CACHE)/gosu: | $(CACHE)
 	$(CURL) -o $@ https://github.com/tianon/gosu/releases/download/$(GOSU_VERSION)/gosu-$(ARCH)
