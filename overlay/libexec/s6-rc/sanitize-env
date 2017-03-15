@@ -14,7 +14,6 @@ cd /
 
 if { /libexec/s6-rc/empty-dir /run }
 
-s6-envdir /etc/s6-rc/env
 importas LAUNCH_ENV S6_LAUNCH_ENV
 
 if { mv $TMP $LAUNCH_ENV }
