@@ -49,7 +49,7 @@ clean: clean-root
 	rm -rf $(BUILD) $(TESTS)/archive.tar.bz2 $(addprefix $(TESTS)/Dockerfile.,$(IMAGE_TAGS))
 
 clean-root:
-	-chmod -R u+w $(ROOT)
+	-chmod -R u+rwx $(ROOT)
 	rm -rf $(ROOT)
 
 artifacts: $(ARTIFACT) $(ARTIFACT).sha512
