@@ -45,16 +45,13 @@ $(CACHE)/manifest.txt: | $(CACHE)
 distclean: clean
 	rm -rf $(CACHE)
 
-clean: clean-root
-	rm -rf $(BUILD) $(TESTS)/archive.tar.bz2 $(addprefix $(TESTS)/Dockerfile.,$(IMAGE_TAGS))
-
-clean-root:
+clean:
 	-chmod -R u+rwx $(ROOT)
-	rm -rf $(ROOT)
+	rm -rf $(BUILD) $(TESTS)/archive.tar.bz2 $(addprefix $(TESTS)/Dockerfile.,$(IMAGE_TAGS))
 
 artifacts: $(ARTIFACT) $(ARTIFACT).sha512
 
-$(ARTIFACT): $(CACHE)/gosu $(addprefix $(OVERLAY)/,$(OVERLAY_FILES)) $(SKAWARE_ARCHIVES) | clean-root $(BUILD)
+$(ARTIFACT): $(CACHE)/gosu $(addprefix $(OVERLAY)/,$(OVERLAY_FILES)) $(SKAWARE_ARCHIVES) | $(BUILD)
 	tools/mkartifact $@ $(ROOT) $(CACHE) $(OVERLAY) $(SKAWARE_ARCHIVES)
 
 $(CACHE)/gosu: | $(CACHE)
@@ -72,6 +69,7 @@ $(ARTIFACT).sha512: $(ARTIFACT)
 images: $(IMAGES)
 
 $(IMAGES): $(BUILD)/image-%: $(DOCKER)/Dockerfile.% $(DOCKER)/archive.tar.bz2
+	-docker rmi -f $(IMAGE_SLUG):$*
 	docker build --pull -t $(IMAGE_SLUG):$* -f $< $(<D)
 	touch $@
 
@@ -81,6 +79,7 @@ $(DOCKER)/archive.tar.bz2: $(ARTIFACT)
 test: $(TEST_RESULTS)
 
 $(TEST_RESULTS): $(BUILD)/test-result-%: $(TESTS)/Dockerfile.% $(BUILD)/image-% $(shell find $(TESTS) -type f)
+	-docker rmi -f test-$*
 	chmod -R a+rX $(TESTS)
 	docker build -t test-$* -f $< $(<D)
 	docker run --rm test-$*
