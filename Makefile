@@ -72,7 +72,7 @@ $(ARTIFACT).sha512: $(ARTIFACT)
 images: $(IMAGES)
 
 $(IMAGES): $(BUILD)/image-%: $(DOCKER)/Dockerfile.% $(DOCKER)/archive.tar.bz2
-	docker build -t $(IMAGE_SLUG):$* -f $< $(<D)
+	docker build --pull -t $(IMAGE_SLUG):$* -f $< $(<D)
 	touch $@
 
 $(DOCKER)/archive.tar.bz2: $(ARTIFACT)
