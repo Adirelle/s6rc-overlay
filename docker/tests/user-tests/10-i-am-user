@@ -9,13 +9,18 @@ if {
     backtick -n USER { id -un }
     import USER
     s6-logcmd
-    s6-test $USER = daemon
+    s6-test $USER = docker
 }
 if {
     backtick -n GRP { id -gn }
     import GRP
     s6-logcmd
-    s6-test $GRP = daemon
+    s6-test $GRP = docker
+}
+if {
+    import -i HOME
+    s6-logcmd
+    s6-test $HOME = /home/docker
 }
 if {
     import -D "" BAR

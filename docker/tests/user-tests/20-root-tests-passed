@@ -1,0 +1,3 @@
+#!/bin/execlineb -P
+s6-logcmd
+s6-test -f /tmp/root-tests-passed

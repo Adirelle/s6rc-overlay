@@ -18,6 +18,11 @@ if {
     s6-test $GRP = root
 }
 if {
+    import -i HOME
+    s6-logcmd
+    s6-test $HOME = /root
+}
+if {
     import -D "" BAR
     s6-logcmd
     s6-test -z $BAR
