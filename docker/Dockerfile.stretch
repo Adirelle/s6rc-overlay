@@ -1,0 +1,21 @@
+FROM debian:stretch
+
+# Since strecth base image has symlinks for /bin, /sbin and /lib,
+# we have to use tar with the -h tflag, that ADD does not allow.
+# This requires to install bzip2 to decompress the archive.
+#
+# acl is needed for writable-paths to work.
+
+RUN export DEBIAN_FRONTEND=noninteractive \
+&&  apt-get update -yq \
+&&  apt-get install -yq --no-install-recommends \
+        acl \
+        bzip2 \
+&&  rm -rf /var/cache/apt/archives/*.deb
+
+COPY archive.tar.bz2 /tmp/
+RUN tar xfah /tmp/archive.tar.bz2 -C / \
+&&  rm /tmp/archive.tar.bz2
+
+ENTRYPOINT ["/sbin/container-init"]
+

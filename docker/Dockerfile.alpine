@@ -1,0 +1,6 @@
+FROM debian:jessie
+
+ADD archive.tar.bz2 /
+
+ENTRYPOINT ["/sbin/container-init"]
+
