@@ -1,3 +1,14 @@
 #!/bin/execlineb -P
-s6-logcmd
-s6-test -w /etc/shells
+
+if {
+    s6-logcmd
+    redirfd -a 1 /usr/writable-file
+    s6-echo ok
+}
+
+if {
+    s6-logcmd
+    redirfd -w 1 /usr/writable-dir/file
+    s6-echo ok
+}
+
