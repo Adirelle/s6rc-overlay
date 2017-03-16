@@ -27,7 +27,7 @@ deploy:
 
 cache:
   directories:
-    - cache
+    - .cache
     - build
 
 # vim: expandtab sw=2 sts=2

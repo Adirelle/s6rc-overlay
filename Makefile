@@ -2,10 +2,10 @@
 # vim: noexpandtab ts=4
 
 BUILD = build
-CACHE = cache
-OVERLAY = overlay
-DOCKER = docker/base
-TESTS = docker/tests
+CACHE = .cache
+SRC = src
+DOCKER = docker
+TESTS = tests
 ROOT = $(BUILD)/$(ARCH)
 
 include $(CACHE)/manifest.txt
@@ -26,7 +26,7 @@ ifdef $(GITHUB_OAUTH_TOKEN)
 CURL += -u$(REPO_OWNER):$(GITHUB_OAUTH_TOKEN)
 endif
 
-OVERLAY_FILES = $(shell find $(OVERLAY) -type f -printf "%P\n")
+SRC_FILES = $(shell find $(SRC) -type f -printf "%P\n")
 
 ARTIFACT = $(BUILD)/s6rc-overlay-$(TAG)-$(ARCH).tar.bz2
 
@@ -51,8 +51,8 @@ clean:
 
 artifacts: $(ARTIFACT) $(ARTIFACT).sha512
 
-$(ARTIFACT): $(CACHE)/gosu $(addprefix $(OVERLAY)/,$(OVERLAY_FILES)) $(SKAWARE_ARCHIVES) | $(BUILD)
-	tools/mkartifact $@ $(ROOT) $(CACHE) $(OVERLAY) $(SKAWARE_ARCHIVES)
+$(ARTIFACT): $(CACHE)/gosu $(addprefix $(SRC)/,$(SRC_FILES)) $(SKAWARE_ARCHIVES) | $(BUILD)
+	tools/mkartifact $@ $(ROOT) $(CACHE) $(SRC) $(SKAWARE_ARCHIVES)
 
 $(CACHE)/gosu: | $(CACHE)
 	$(CURL) -o $@ https://github.com/tianon/gosu/releases/download/$(GOSU_VERSION)/gosu-$(ARCH)

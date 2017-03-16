@@ -1,4 +1,4 @@
 /build
-/cache
-/docker/base/archive.tar.bz2
-/docker/tests/Dockerfile.*
+/.cache
+/docker/archive.tar.bz2
+/tests/Dockerfile.*

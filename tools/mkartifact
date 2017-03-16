@@ -2,7 +2,7 @@
 TARGET="$1"
 ROOT="$2"
 CACHE="$3"
-OVERLAY="$4"
+SRC="$4"
 shift 4
 set -ex
 
@@ -11,7 +11,7 @@ if [[ -d $ROOT ]]; then
     rm -rf $R $ROOT
 fi
 
-cp -a $OVERLAY $ROOT
+cp -a $SRC $ROOT
 cp $CACHE/gosu $ROOT/libexec/gosu
 for A in $@; do tar xaf $A -C $ROOT; done
 

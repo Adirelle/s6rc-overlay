@@ -8,7 +8,7 @@ if {
         s6-logcmd
         s6-test $FOO = BAR
     }
-    /root-tests/20-i-am-root
+    /tests/root/20-i-am-root
 }
 
 if {
@@ -18,7 +18,7 @@ if {
         s6-logcmd
         s6-test -z $FOO
     }
-    /user-tests/10-i-am-user
+    /tests/user/10-i-am-user
 }
 
 if {
