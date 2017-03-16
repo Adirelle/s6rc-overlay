@@ -1,7 +1,0 @@
-#!/bin/execlineb -s2
-backtick -nI $1 {
-    if { s6-test -r ${1}/${2} }
-    redirfd -r 0 ${1}/${2}
-    s6-cat
-}
-$@
