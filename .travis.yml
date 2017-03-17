@@ -13,10 +13,6 @@ script:
   - make images
   - make test
 
-before_deploy:
-  - mkdir -p $HOME/.docker
-  - echo '{"auths":{"https://index.docker.io/v1/":{"auth":"'${DOCKER_AUTH_TOKEN}'"}}}' >$HOME/.docker/config.json
-
 deploy:
   - provider: releases
     on:
@@ -33,6 +29,7 @@ deploy:
       tags: true
       branch: master
     script: make push
+    skip_cleanup: true
 
 cache:
   directories:

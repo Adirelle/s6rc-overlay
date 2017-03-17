@@ -91,5 +91,9 @@ $(TESTS)/Dockerfile.%: $(TESTS)/template.Dockerfile
 
 push: $(PUSHES)
 
-$(PUSHES): $(BUILD)/pushed-%: $(BUILD)/test-result-%
+$(PUSHES): $(BUILD)/pushed-%: $(BUILD)/test-result-% | $(HOME)/.docker/config.json
 	docker push $(IMAGE_SLUG):$*
+
+$(HOME)/.docker/config.json:
+	mkdir -p $(@D)
+	echo '{"auths":{"https://index.docker.io/v1/":{"auth":"'$(DOCKER_AUTH_TOKEN)'"}}}' >$@
