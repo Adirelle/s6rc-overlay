@@ -96,4 +96,4 @@ $(PUSHES): $(BUILD)/pushed-%: $(BUILD)/test-result-% | $(HOME)/.docker/config.js
 
 $(HOME)/.docker/config.json:
 	mkdir -p $(@D)
-	echo '{"auths":{"https://index.docker.io/v1/":{"auth":"'$(DOCKER_AUTH_TOKEN)'"}}}' >$@
+	@echo '{"auths":{"https://index.docker.io/v1/":{"auth":"'$(DOCKER_AUTH_TOKEN)'"}}}' >$@
