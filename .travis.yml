@@ -13,17 +13,26 @@ script:
   - make images
   - make test
 
+before_deploy:
+  - mkdir -p $HOME/.docker
+  - echo '{"auths":{"https://index.docker.io/v1/":{"auth":"'${DOCKER_AUTH_TOKEN}'"}}}' >$HOME/.docker/config.json
+
 deploy:
-  provider: releases
-  on:
-    tags: true
-    branch: master
-  file_glob: true
-  file: build/s6rc-overlay-*.tar.*
-  skip_cleanup: true
-  overwrite: true
-  api_key:
-    secure: "rU0xPdBKi2DPKNrRVApiZqKrDpn6F9wVsbbKvOD7uhSCMhliobk4A59Vxb+rPBygnYe36MCmS2JcLWccgfNv+sUQvaJpWhX5dk0xYjyiAlDrSm6FQ4TFRgfOrMAmCAuK+WacyQdpY67BkWzIxuTJ1udwIrHxvssDSgJqo+LYeh+fisVKJabHv886vOvTgdrd6xl+/j3H3hMhSGhb0BeIM75XS1x/Oh6v5pEckgNFDLScN4uqTso3koh4U+UC9seORGPr8+K+2hK+gWBSV97nsbzwkvqUxEbHX+1Bh+sdLo/x6sMFj8zhR4+ktBFb+2ttILN1R4smTaB+EiwyQRhYbu2Q0MHQcnV0veInnvIK3zBrKORVzbf7bjDTBOuBw+WPY+BZ7e5qB9Lol1R0Usi1Q5ZmcTvtlgpR7Fhpd3nuYBNx+Z2MJREyi7DQf6XfOJwDap7SgNBT/z1iRh78SF+SMVBnaIa8s16ELhsciav3dEb0eY7ohFa5DixmhAKnJ75CuHFkMikkKNLkhvDNxWqkTNwmIyjfP78ofnmRLZUBXjYLVY1NmLoHjgXnUwkrOQ6IhGnvkko38rNgE4EUTj42Cz7bvv2I0VDkWwK5QseMzyr+vEJY3lfDSu7vSpiCkKBENXrUK06P2qqgDmS4yejtzWEAff+t5VgSrxJax70DT4k="
+  - provider: releases
+    on:
+      tags: true
+      branch: master
+    file_glob: true
+    file: build/s6rc-overlay-*.tar.*
+    skip_cleanup: true
+    overwrite: true
+    api_key:
+      secure: "rU0xPdBKi2DPKNrRVApiZqKrDpn6F9wVsbbKvOD7uhSCMhliobk4A59Vxb+rPBygnYe36MCmS2JcLWccgfNv+sUQvaJpWhX5dk0xYjyiAlDrSm6FQ4TFRgfOrMAmCAuK+WacyQdpY67BkWzIxuTJ1udwIrHxvssDSgJqo+LYeh+fisVKJabHv886vOvTgdrd6xl+/j3H3hMhSGhb0BeIM75XS1x/Oh6v5pEckgNFDLScN4uqTso3koh4U+UC9seORGPr8+K+2hK+gWBSV97nsbzwkvqUxEbHX+1Bh+sdLo/x6sMFj8zhR4+ktBFb+2ttILN1R4smTaB+EiwyQRhYbu2Q0MHQcnV0veInnvIK3zBrKORVzbf7bjDTBOuBw+WPY+BZ7e5qB9Lol1R0Usi1Q5ZmcTvtlgpR7Fhpd3nuYBNx+Z2MJREyi7DQf6XfOJwDap7SgNBT/z1iRh78SF+SMVBnaIa8s16ELhsciav3dEb0eY7ohFa5DixmhAKnJ75CuHFkMikkKNLkhvDNxWqkTNwmIyjfP78ofnmRLZUBXjYLVY1NmLoHjgXnUwkrOQ6IhGnvkko38rNgE4EUTj42Cz7bvv2I0VDkWwK5QseMzyr+vEJY3lfDSu7vSpiCkKBENXrUK06P2qqgDmS4yejtzWEAff+t5VgSrxJax70DT4k="
+  - provider: script
+    on:
+      tags: true
+      branch: master
+    script: make push
 
 cache:
   directories:

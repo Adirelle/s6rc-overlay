@@ -34,8 +34,9 @@ IMAGE_SLUG = $(shell echo $(REPO_SLUG) | tr '[:upper:]' '[:lower:]')
 IMAGE_TAGS = $(patsubst $(DOCKER)/Dockerfile.%,%,$(wildcard $(DOCKER)/Dockerfile.*))
 IMAGES = $(addprefix $(BUILD)/image-,$(IMAGE_TAGS))
 TEST_RESULTS = $(addprefix $(BUILD)/test-result-,$(IMAGE_TAGS))
+PUSHES = $(addprefix $(BUILD)/pushed-,$(IMAGE_TAGS))
 
-.PHONY: all clean clean-root distclean images test
+.PHONY: all clean clean-root distclean images test push
 
 all: artifacts
 
@@ -88,3 +89,7 @@ $(TEST_RESULTS): $(BUILD)/test-result-%: $(TESTS)/Dockerfile.% $(BUILD)/image-% 
 $(TESTS)/Dockerfile.%: $(TESTS)/template.Dockerfile
 	echo "FROM $(IMAGE_SLUG):$*" | cat - $< >$@
 
+push: $(PUSHES)
+
+$(PUSHES): $(BUILD)/pushed-%: $(BUILD)/test-result-%
+	docker push $(IMAGE_SLUG):$*

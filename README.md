@@ -14,7 +14,7 @@ Usage
 
 ### With Docker
 
-You can use on of the (yet to come) [public images](https://hub.docker.com/r/adirelle/s6rc-overlay/).
+You can use on of the [docker images](https://hub.docker.com/r/adirelle/s6rc-overlay/).
 
 Or include it in your Dockerfile, like this:
 
