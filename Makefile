@@ -70,7 +70,6 @@ $(ARTIFACT).sha512: $(ARTIFACT)
 images: $(IMAGES)
 
 $(IMAGES): $(BUILD)/image-%: $(DOCKER)/Dockerfile.% $(DOCKER)/archive.tar.bz2
-	-docker rmi -f $(IMAGE_SLUG):$*
 	docker build --pull -t $(IMAGE_SLUG):$* -f $< $(<D)
 	touch $@
 
@@ -80,7 +79,6 @@ $(DOCKER)/archive.tar.bz2: $(ARTIFACT)
 test: $(TEST_RESULTS)
 
 $(TEST_RESULTS): $(BUILD)/test-result-%: $(TESTS)/Dockerfile.% $(BUILD)/image-% $(shell find $(TESTS) -type f)
-	-docker rmi -f test-$*
 	chmod -R a+rX $(TESTS)
 	docker build -t test-$* -f $< $(<D)
 	docker run --rm test-$*
