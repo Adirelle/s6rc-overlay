@@ -21,9 +21,3 @@ if {
     /tests/user/10-i-am-user
 }
 
-if {
-    with-contenv -d
-    s6-logcmd
-    s6-test $LAUNCH_ENV != \\$LAUNCH_ENV
-}
-
