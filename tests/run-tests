@@ -1,0 +1,6 @@
+#!/bin/execlineb -S1
+elglob -s TESTS ${1}/*
+forx TEST { $TESTS }
+    import -u TEST
+    s6-notice $TEST
+    $TEST

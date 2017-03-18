@@ -1,1 +1,1 @@
-run-parts --exit-on-error /tests/root
+cd / run-tests /tests/root

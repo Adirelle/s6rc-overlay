@@ -1,23 +1,46 @@
 #!/bin/execlineb -P
 export FOO BAR
-
 if {
     with-contenv 
-    if {
-        import -D "" FOO
-        s6-logcmd
-        s6-test $FOO = BAR
-    }
-    /tests/root/20-i-am-root
+    if { check-env root root /root / }
+    import -i FOO
+    s6-logcmd
+    s6-test $FOO = BAR
 }
-
 if {
     with-contenv -a
-    if {
-        import -D "" FOO
-        s6-logcmd
-        s6-test -z $FOO
-    }
-    /tests/user/10-i-am-user
+    if { check-env docker docker /home/docker /tmp FOO }
+    import -D "" FOO
+    s6-logcmd
+    s6-test -z $FOO
 }
-
+if {
+    with-contenv -w
+    if { check-env root root /root /tmp }
+    import -i FOO
+    s6-logcmd
+    s6-test $FOO = BAR
+}
+if {
+    with-contenv -u
+    if { check-env docker docker /root / }
+    import -i FOO
+    s6-logcmd
+    s6-test $FOO = BAR
+}
+if {
+    with-contenv -e
+    if { check-env root root /home/docker / FOO }
+    import -i FOO
+    s6-logcmd
+    s6-test $FOO = BAR
+}
+if {
+    with-contenv -c
+    /bin/export PATH /bin:/usr/bin:/sbin:/usr/sbin
+    if { check-env root root **unset** / }
+    import -D ""
+    s6-logcmd
+    s6-test -z $FOO
+}
+exit 0

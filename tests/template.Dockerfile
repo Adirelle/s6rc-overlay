@@ -3,6 +3,7 @@ RUN mkdir /tests
 ADD user /tests/user
 ADD root /tests/root
 ADD services.d/root-tests /etc/services.d/root-tests
+ADD check-env run-tests /bin/
 
 RUN adduser --home /home/docker --shell /bin/bash --disabled-password -gecos '' docker
 
@@ -18,4 +19,4 @@ ENV S6_VERBOSITY=3 \
     WRITABLE_USER=docker \
     BAR=FOO
 
-CMD run-parts --exit-on-error /tests/user
+CMD ["/bin/run-tests", "/tests/user"]
