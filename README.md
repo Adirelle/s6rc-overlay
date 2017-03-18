@@ -16,11 +16,11 @@ The reading of [s6](http://skarnet.org/software/s6) and
 highly advised.
 
 Usage
-------------
+-----
 
 ### With Docker
 
-You can use on of the [docker images](https://hub.docker.com/r/adirelle/s6rc-overlay/).
+You can use one of the [docker images](https://hub.docker.com/r/adirelle/s6rc-overlay/).
 
 Or include it in your Dockerfile, like this:
 
@@ -66,16 +66,16 @@ Environments
 ------------
 
 When the starting user is not root, s6rc-overlay creates a safe environment for
-root: it clear all environment variables, redefines PATH and import the
+root: it clears all environment variables, redefines PATH and imports the
 configuration variables from the starting environment.
 
 Said otherwise, root default environment does not contains that environment
 variables passed at launch, and the starting user does not have access to
 configuration variables.
 
-All services are run in the root environment, e.g. as root with almost no
-variables. If they need to use variables of the starting environment, you
-can use the with-contenv helper (see below).
+All services are run in the root environment, i.e. as root with almost no
+variables. If they need variables from the starting environment, you
+can use the `with-contenv` helper (see below).
 
 Services
 --------
@@ -85,7 +85,7 @@ Services
 You can provide a precompiled service database in `/etc/s6-rc/compiled` or let
 s6rc-overlay compile it from service definitions in `/etc/services.d`.  See the
 [s6-rc-compile documentation](http://skarnet.org/software/s6-rc/s6-rc-compile.html) about
-service definition format.
+the format of service definitions.
 
 ### Default services
 
@@ -111,16 +111,16 @@ It depends on `remove-paths`.
 #### `init`
 
 A simple bundle that references `writable-paths`. It can be used as a
-synchronisation point before launching longruns. One can add other services to
+synchronisation point before launching longruns. You can add other services to
 wait to with a single command:
 
 ```
-echo my_other_service >> /etc/services.d/init/contents
+echo my_other_service >> /etc/s6-rc/source/init/contents
 ```
 
 #### `services`
 
-This service is dynamically added by s6rc-overlay on compilation. This is a
+This service is dynamically added by s6rc-overlay on compilation. It is a
 simple bundle that lists every services in `/etc/services.d` to ensure they are
 all started.
 
@@ -137,12 +137,12 @@ Prints `message` in green and executes into `prog`.
 
     s6-logcmd prog...
 
-Prints `prog` in green and executes it, standard and error outputs are printing
-in white and red respectively. The final status is shown as 'Success' in green
-if it 0, else as 'Failed (actual value)' in red.
+Prints `prog` in yellow and executes it. Standard and error outputs are colored
+in white and red, respectively. The final status is shown as 'Success' in green
+if it is 0, or as 'Failed (actual value)' in red in case of failure.
 
 All outputs are prefixed with `NN>` where NN is a sequential number. This helps
-identify entangled outputs from parallel tasks.
+identifying entangled outputs from parallel tasks.
 
 ### with-contenv (root only)
 
@@ -157,14 +157,14 @@ options.
 
 * `-e` imports all variables from the starting environment.
 
-* `-w` change the working directory to the starting one.
+* `-w` changes the working directory to the starting one.
 
 * `-u` runs progs as the starting user.
 
 Configuration
 -------------
 
-He is a list of environment variables to alter s6rc-overlay behavior:
+He is a list of environment variables that alters s6rc-overlay behavior:
 
 * `S6_VERBOSITY`: the verbosity of various s6-rc commands. Defaults to 1.
 
