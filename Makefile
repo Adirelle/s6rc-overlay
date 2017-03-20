@@ -79,7 +79,6 @@ $(SKAWARE_ARCHIVES): $(CACHE)/%: | $(CACHE)
 images: $(IMAGES)
 
 $(IMAGES): $(BUILD)/image-%: $(DOCKER)/Dockerfile.% $(DOCKER)/archive.tar.bz2
-	-docker rmi -f $(IMAGE_SLUG):$*
 	docker build --pull -t $(IMAGE_SLUG):$* -f $< $(<D)
 	touch $@
 
@@ -89,7 +88,6 @@ $(DOCKER)/archive.tar.bz2: $(ARCHIVE)
 test: $(TEST_RESULTS)
 
 $(TEST_RESULTS): $(BUILD)/test-result-%: $(TESTS)/Dockerfile.% $(BUILD)/image-% $(shell find $(TESTS) -type f)
-	-docker rmi -f test-$*
 	chmod -R a+rX $(TESTS)
 	docker build -t test-$* -f $< $(<D)
 	docker run --rm test-$*
@@ -98,10 +96,18 @@ $(TEST_RESULTS): $(BUILD)/test-result-%: $(TESTS)/Dockerfile.% $(BUILD)/image-% 
 $(TESTS)/Dockerfile.%: $(TESTS)/template.Dockerfile
 	echo "FROM $(IMAGE_SLUG):$*" | cat - $< >$@
 
-push: $(PUSHES)
+push: $(PUSHES) $(BUILD)/pushed-latest
 
-$(PUSHES): $(BUILD)/pushed-%: $(BUILD)/test-result-% | $(HOME)/.docker/config.json
+$(BUILD)/pushed-latest: $(BUILD)/image-alpine | $(HOME)/.docker/config.json
+	docker tag $(IMAGE_SLUG):alpine $(IMAGE_SLUG):latest
+	docker push $(IMAGE_SLUG):latest
+	docker tag $(IMAGE_SLUG):alpine $(IMAGE_SLUG):$(TAG)
+	docker push $(IMAGE_SLUG):$(TAG)
+
+$(PUSHES): $(BUILD)/pushed-%: $(BUILD)/image-% | $(HOME)/.docker/config.json
 	docker push $(IMAGE_SLUG):$*
+	docker tag $(IMAGE_SLUG):$* $(IMAGE_SLUG):$(TAG)-$*
+	docker push $(IMAGE_SLUG):$(TAG)-$*
 
 $(HOME)/.docker/config.json:
 	mkdir -p $(@D)

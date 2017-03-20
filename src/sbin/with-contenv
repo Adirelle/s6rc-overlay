@@ -1,11 +1,11 @@
 #!/bin/execlineb
-elgetopt acwuedh
+elgetopt acwueh
 import -uD "" ELGETOPT_h
 ifelse { s6-test -n $ELGETOPT_h }
 { 
     foreground {
         import 0
-        s6-echo -- $0 "[ -a | [-c] [-w] [-u] [-e] ] [-d] prog"
+        s6-echo -- $0 "[ -a | [-c] [-w] [-u] [-e] ] prog"
     }
     exit 2
 }
@@ -16,7 +16,6 @@ multisubstitute {
     import -uD $ELGETOPT_a ELGETOPT_w
     import -uD $ELGETOPT_a ELGETOPT_u
     import -uD $ELGETOPT_a ELGETOPT_e
-    import -uD "" ELGETOPT_d
 }
 backtick -n __APPLYUIDGID {
     if -t { s6-test -n $ELGETOPT_u }
@@ -42,16 +41,11 @@ backtick -n __ENVDIR {
     if -t { s6-test -n $ELGETOPT_e }
     s6-echo -- /bin/s6-envdir ${LAUNCH_ENV}/env
 } 
-backtick -n __DEFINE {
-    if -t { s6-test -n $ELGETOPT_d }
-    s6-echo -- /bin/define LAUNCH_ENV $LAUNCH_ENV
-} 
 multisubstitute {
     import -us __APPLYUIDGID
     import -us __CDWORKDIR
     import -us __CLEARENV
     import -us __ENVDIR
-    import -us __DEFINE
 }
 elgetpositionals
-$__APPLYUIDGID $__CDWORKDIR /bin/emptyenv $__CLEARENV $__ENVDIR $__DEFINE $@
+$__APPLYUIDGID $__CDWORKDIR /bin/emptyenv $__CLEARENV $__ENVDIR $@

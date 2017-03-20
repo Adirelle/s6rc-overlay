@@ -1,0 +1,36 @@
+#!/bin/execlineb
+multisubstitute {
+    importas -i EXPECTED_USER 1
+    importas -i EXPECTED_GRP 2
+    importas -i EXPECTED_HOME 3
+    importas -i EXPECTED_CWD 4
+    importas -D "**unset**" EXPECTED_BAR 5
+}
+if {
+    backtick -n USER { id -un }
+    import USER
+    s6-logcmd
+    s6-test $USER = $EXPECTED_USER
+}
+if {
+    backtick -n GRP { id -gn }
+    import GRP
+    s6-logcmd
+    s6-test $GRP = $EXPECTED_GRP
+}
+if {
+    import -D "**unset**" HOME
+    s6-logcmd
+    s6-test $HOME = $EXPECTED_HOME
+}
+if {
+    getcwd CWD
+    import CWD
+    s6-logcmd
+    s6-test $CWD = $EXPECTED_CWD
+}
+if {
+    import -D "**unset**" BAR
+    s6-logcmd
+    s6-test $BAR = $EXPECTED_BAR
+}
