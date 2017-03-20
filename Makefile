@@ -8,8 +8,6 @@ DOCKER = docker
 TESTS = tests
 ROOT = $(BUILD)/$(ARCH)
 
-include $(CACHE)/manifest.txt
-
 ARCH ?= amd64
 TAG ?= master
 REPO_OWNER ?= Adirelle
@@ -18,6 +16,9 @@ REPO_SLUG ?= Adirelle/s6rc-overlay
 SKAWARE_VERSION = 1.19.1
 SKAWARE_SOURCE = https://github.com/just-containers/skaware/releases/download/v$(SKAWARE_VERSION)
 SKAWARE_ARCHIVES = $(patsubst %,$(CACHE)/%-linux-$(ARCH)-bin.tar.gz,execline-$(execline) s6-$(s6) s6-portable-utils-$(s6-portable-utils) s6-rc-$(s6-rc))
+SKAWARE_MANIFEST = $(CACHE)/manifest-portable.txt
+
+-include $(SKAWARE_MANIFEST)
 
 GOSU_VERSION = 1.10
 
@@ -40,8 +41,8 @@ PUSHES = $(addprefix $(BUILD)/pushed-,$(IMAGE_TAGS))
 
 all: artifacts
 
-$(CACHE)/manifest.txt: | $(CACHE)
-	$(CURL) -o $@ $(SKAWARE_SOURCE)/manifest.txt
+$(SKAWARE_MANIFEST): | $(CACHE)
+	$(CURL) -o $@ $(SKAWARE_SOURCE)/$(@F)
 
 distclean: clean
 	rm -rf $(CACHE)
