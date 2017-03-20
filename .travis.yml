@@ -22,7 +22,9 @@ deploy:
       tags: true
       branch: master
     file_glob: true
-    file: build/s6rc-overlay-*.tar.*
+    file:
+      - build/s6rc-overlay-*.tar.*
+      - build/manifest.txt
     skip_cleanup: true
     overwrite: true
     api_key:
