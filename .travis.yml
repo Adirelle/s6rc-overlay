@@ -7,6 +7,9 @@ services:
 env:
   - ARCH=amd64
 
+before_script:
+  - make clean
+
 script:
   - export TAG=${TRAVIS_TAG:-${TRAVIS_BRANCH}}
   - make
