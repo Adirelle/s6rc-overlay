@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 TARGET="$1"
 ROOT="$2"
-CACHE="$3"
-SRC="$4"
+SRC="$3"
+SUEXEC="$4"
 shift 4
 set -ex
 
@@ -12,7 +12,7 @@ if [[ -d $ROOT ]]; then
 fi
 
 cp -a $SRC $ROOT
-cp $CACHE/gosu $ROOT/libexec/gosu
+cp $SUEXEC $ROOT/libexec/su-exec
 for A in $@; do tar xaf $A -C $ROOT; done
 
 mkdir -p $ROOT/etc/services.d
@@ -23,7 +23,7 @@ chmod 0500 $ROOT/sbin/*
 chmod 0555 $ROOT/bin/* $ROOT/sbin/container-init
 chmod -R a+rX $ROOT/etc/s6-rc $ROOT/libexec/s6-rc
 chmod 0500 $ROOT/bin/s6-*uidgid
-chmod 4555 $ROOT/libexec/gosu
+chmod 4555 $ROOT/libexec/su-exec
 
 tar caf $TARGET -C $ROOT --owner=0 --group=0 --exclude=.delete.me .
 

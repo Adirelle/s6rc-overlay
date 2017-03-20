@@ -22,7 +22,7 @@ elgetpositionals
 
 emptyenv
 /bin/export PATH /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
-/libexec/gosu root:root
+/libexec/su-exec root:root
 cd /
 
 export S6_CONF_DIR $S6_CONF_DIR

@@ -20,7 +20,14 @@ SKAWARE_MANIFEST = $(CACHE)/manifest-portable.txt
 
 -include $(SKAWARE_MANIFEST)
 
-GOSU_VERSION = 1.10
+SUEXEC_VERSION = 0.0.2
+SUEXEC_MANIFEST_SOURCE = https://github.com/Adirelle/su-exec-musl/releases/download/v$(SUEXEC_VERSION)/manifest.txt
+SUEXEC_MANIFEST = $(CACHE)/manifest.txt
+
+-include $(SUEXEC_MANIFEST)
+
+SUEXEC_SOURCE = https://github.com/Adirelle/su-exec-musl/releases/download/v$(SUEXEC_VERSION)/su-exec-$(su-exec)-x86_64-linux
+SUEXEC_BIN = $(CACHE)/su-exec-$(su-exec)-x86_64-linux
 
 CURL = curl --silent --show-error --location --remote-time
 ifdef $(GITHUB_OAUTH_TOKEN)
@@ -47,6 +54,9 @@ all: artifacts
 $(SKAWARE_MANIFEST): | $(CACHE)
 	$(CURL) -o $@ $(SKAWARE_SOURCE)/$(@F)
 
+$(SUEXEC_MANIFEST): | $(CACHE)
+	$(CURL) -o $@ $(SUEXEC_MANIFEST_SOURCE)
+
 distclean: clean
 	rm -rf $(CACHE)
 
@@ -56,19 +66,19 @@ clean:
 
 artifacts: $(ARTIFACTS)
 
-$(ARCHIVE): $(CACHE)/gosu $(addprefix $(SRC)/,$(SRC_FILES)) $(SKAWARE_ARCHIVES) | $(BUILD)
-	tools/mkartifact $@ $(ROOT) $(CACHE) $(SRC) $(SKAWARE_ARCHIVES)
+$(ARCHIVE): $(SUEXEC_BIN) $(addprefix $(SRC)/,$(SRC_FILES)) $(SKAWARE_ARCHIVES) | $(BUILD)
+	tools/mkartifact $@ $(ROOT) $(SRC) $(SUEXEC_BIN) $(SKAWARE_ARCHIVES)
+
+$(SUEXEC_BIN): | $(CACHE)
+	$(CURL) -o $@ $(SUEXEC_SOURCE)
 
 $(CHECKSUM): $(ARCHIVE)
 	cd $(<D) && sha512sum $(<F) >$(@F)
 
-$(MANIFEST): $(SKAWARE_MANIFEST) $(CACHE)/gosu $(ARCHIVE) | $(BUILD)
+$(MANIFEST): $(SKAWARE_MANIFEST) $(SUEXEC_MANIFEST) $(ARCHIVE) | $(BUILD)
 	echo s6rc-overlay=$(TAG) >$@
-	echo gosu=$(GOSU_VERSION) >>$@
 	cat $(SKAWARE_MANIFEST) >>$@
-
-$(CACHE)/gosu: | $(CACHE)
-	$(CURL) -o $@ https://github.com/tianon/gosu/releases/download/$(GOSU_VERSION)/gosu-$(ARCH)
+	cat $(SUEXEC_MANIFEST) >>$@
 
 $(CACHE) $(BUILD):
 	mkdir -p $@
