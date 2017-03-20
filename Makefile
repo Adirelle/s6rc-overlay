@@ -29,7 +29,10 @@ endif
 
 SRC_FILES = $(shell find $(SRC) -type f -printf "%P\n")
 
-ARTIFACT = $(BUILD)/s6rc-overlay-$(TAG)-$(ARCH).tar.bz2
+ARCHIVE = $(BUILD)/s6rc-overlay-$(TAG)-$(ARCH).tar.bz2
+CHECKSUM = $(ARCHIVE).sha512
+MANIFEST = $(BUILD)/manifest.txt
+ARTIFACTS = $(ARCHIVE) $(CHECKSUM) $(MANIFEST)
 
 IMAGE_SLUG = $(shell echo $(REPO_SLUG) | tr '[:upper:]' '[:lower:]')
 IMAGE_TAGS = $(patsubst $(DOCKER)/Dockerfile.%,%,$(wildcard $(DOCKER)/Dockerfile.*))
@@ -51,10 +54,18 @@ clean:
 	-chmod -R u+rwx $(ROOT)
 	rm -rf $(BUILD) $(TESTS)/archive.tar.bz2 $(addprefix $(TESTS)/Dockerfile.,$(IMAGE_TAGS))
 
-artifacts: $(ARTIFACT) $(ARTIFACT).sha512
+artifacts: $(ARTIFACTS)
 
-$(ARTIFACT): $(CACHE)/gosu $(addprefix $(SRC)/,$(SRC_FILES)) $(SKAWARE_ARCHIVES) | $(BUILD)
+$(ARCHIVE): $(CACHE)/gosu $(addprefix $(SRC)/,$(SRC_FILES)) $(SKAWARE_ARCHIVES) | $(BUILD)
 	tools/mkartifact $@ $(ROOT) $(CACHE) $(SRC) $(SKAWARE_ARCHIVES)
+
+$(CHECKSUM): $(ARCHIVE)
+	cd $(<D) && sha512sum $(<F) >$(@F)
+
+$(MANIFEST): $(SKAWARE_MANIFEST) $(CACHE)/gosu $(ARCHIVE) | $(BUILD)
+	echo s6rc-overlay=$(TAG) >$@
+	echo gosu=$(GOSU_VERSION) >>$@
+	cat $(SKAWARE_MANIFEST) >>$@
 
 $(CACHE)/gosu: | $(CACHE)
 	$(CURL) -o $@ https://github.com/tianon/gosu/releases/download/$(GOSU_VERSION)/gosu-$(ARCH)
@@ -65,9 +76,6 @@ $(CACHE) $(BUILD):
 $(SKAWARE_ARCHIVES): $(CACHE)/%: | $(CACHE)
 	$(CURL) -o $@ $(SKAWARE_SOURCE)/$*
 
-$(ARTIFACT).sha512: $(ARTIFACT)
-	cd $(<D) && sha512sum $(<F) >../$@
-
 images: $(IMAGES)
 
 $(IMAGES): $(BUILD)/image-%: $(DOCKER)/Dockerfile.% $(DOCKER)/archive.tar.bz2
@@ -75,7 +83,7 @@ $(IMAGES): $(BUILD)/image-%: $(DOCKER)/Dockerfile.% $(DOCKER)/archive.tar.bz2
 	docker build --pull -t $(IMAGE_SLUG):$* -f $< $(<D)
 	touch $@
 
-$(DOCKER)/archive.tar.bz2: $(ARTIFACT)
+$(DOCKER)/archive.tar.bz2: $(ARCHIVE)
 	cp -a $< $@
 
 test: $(TEST_RESULTS)
