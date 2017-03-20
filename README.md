@@ -187,7 +187,7 @@ to `/etc/s6-rc`.
 Security concerns
 -----------------
 
-s6rc-overlay uses `gosu` : it is required for privilege escalation in the
+s6rc-overlay uses `su-exec` : it is required for privilege escalation in the
 container during startup, but it can also be exploited by malicious code.
 
 Components
@@ -198,7 +198,7 @@ Components
    * POSIX-compliant tools, well-suited for execline scripts: [s6-portable-utils](http://www.skarnet.org/software/s6-portable-utils/),
    * supervision suite: [s6](http://www.skarnet.org/software/s6/),
    * service manager: [s6-rc](http://www.skarnet.org/software/s6-rc/),
- * [gosu](https://github.com/tianon/gosu).
+ * [su-exec](https://github.com/ncopa/su-exec), compiled using the product of [musl-cross-make](https://github.com/just-containers/musl-cross-make).
 
 License
 -------
