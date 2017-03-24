@@ -33,8 +33,9 @@ export S6_STOP_TIMEOUT $S6_STOP_TIMEOUT
 export S6_VERBOSITY $S6_VERBOSITY
 export S6_TARGET $S6_TARGET
 
+export S6_COMPILED_DIR ${S6_CONF_DIR}/compiled
+
 export S6_LAUNCH_ENV ${S6_RUN_DIR}/launch
-export S6_COMPILED_DIR ${S6_RUN_DIR}/compiled
 export S6_SCAN_DIR ${S6_RUN_DIR}/scandir
 export S6_LIVE_DIR ${S6_RUN_DIR}/live
 
