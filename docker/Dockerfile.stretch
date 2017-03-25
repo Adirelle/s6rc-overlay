@@ -5,13 +5,14 @@ FROM debian:stretch
 # This requires to install bzip2 to decompress the archive.
 #
 # acl is needed for writable-paths to work.
+# procps is needed for the kill binary.
 
 RUN export DEBIAN_FRONTEND=noninteractive \
 &&  apt-get update -yq \
 &&  apt-get install -yq --no-install-recommends \
         acl \
         bzip2 \
-&&  rm -rf /var/cache/apt/archives/*.deb
+        procps
 
 COPY archive.tar.bz2 /tmp/
 RUN tar xfah /tmp/archive.tar.bz2 -C / \
