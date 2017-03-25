@@ -32,6 +32,7 @@ background {
 }
 unexport !
 
+emptyenv -P
 redirfd -r 0 /dev/null
 s6-notice "Starting service supervisor"
-s6-svscan -st0 $S6_SCAN_DIR
+s6-svscan -s $S6_SCAN_DIR
