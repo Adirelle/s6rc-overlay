@@ -1,8 +1,8 @@
 #!/bin/bash
 set -bm
 for sig in TERM HUP INT KILL; do
-    ( exec docker run --rm "$1" s6-logcmd kill -$sig 1 ) & TEST=$!
-    ( sleep 15 ; exit 1 ) & TIMEOUT=$!
+    ( exec docker run --rm -e 'S6_VERBOSITY=2' "$1" s6-logcmd sh -c "kill -$sig 1" ) & TEST=$!
+    ( sleep 15 ; echo "Test timed out" >&2; exit 1 ) & TIMEOUT=$!
 
     wait -n
     RESULT=$?
