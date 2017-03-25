@@ -1,0 +1,25 @@
+#!/bin/bash
+set -exbm
+
+state() {
+    docker inspect -f "{{.State.Status}}-{{.State.ExitCode}}" $1
+}
+
+ID=$(docker run -d "$1")
+trap "docker rm $ID >/dev/null" EXIT
+sleep 5
+
+[[ $(state $ID) = running-0 ]]
+
+docker stop $ID >/dev/null
+
+[[ $(state $ID) = exited-0 ]]
+
+docker start $ID >/dev/null
+
+[[ $(state $ID) = running-0 ]]
+
+docker stop $ID >/dev/null
+
+[[ $(state $ID) = exited-0 ]]
+
