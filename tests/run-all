@@ -1,0 +1,20 @@
+#!/bin/bash
+cd $(dirname $0)
+IMAGE="$1"
+SLUG="$(echo $IMAGE | tr -s :/ __)"
+LABEL="$2"
+set -ex
+
+for TST in [0-9]*/run; do
+    DIR="${TST%%/run}"
+    if [[ -f "$DIR/Dockerfile" ]]; then
+        DKFILE="$DIR/tmp-Dockerfile-$SLUG"
+        TSTIMG="test-$SLUG"
+        sed -e "/^FROM/s@-IMAGE-@$IMAGE@" "$DIR/Dockerfile" >"$DKFILE"
+        docker build --label "$LABEL" -t "$TSTIMG" -f "$DKFILE" "$DIR"
+        "$DIR/run" "$TSTIMG"
+    else
+        "$DIR/run" "$IMAGE"
+    fi
+done
+

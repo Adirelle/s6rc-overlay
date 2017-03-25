@@ -44,6 +44,7 @@ ARTIFACTS = $(ARCHIVE) $(CHECKSUM) $(MANIFEST)
 IMAGE_SLUG = $(shell echo $(REPO_SLUG) | tr '[:upper:]' '[:lower:]')
 IMAGE_TAGS = $(patsubst $(DOCKER)/Dockerfile.%,%,$(wildcard $(DOCKER)/Dockerfile.*))
 IMAGES = $(addprefix $(BUILD)/image-,$(IMAGE_TAGS))
+TEST_LABEL = test_image_for=s6rc-overlay
 TEST_RESULTS = $(addprefix $(BUILD)/test-result-,$(IMAGE_TAGS))
 PUSHES = $(addprefix $(BUILD)/pushed-,$(IMAGE_TAGS))
 
@@ -59,10 +60,12 @@ $(SUEXEC_MANIFEST): | $(CACHE)
 
 distclean: clean
 	rm -rf $(CACHE)
+	docker images -q "adirelle/s6rc-overlay:*" | xargs -r docker rmi -f
 
 clean:
 	-chmod -R u+rwx $(ROOT)
 	rm -rf $(BUILD) $(TESTS)/archive.tar.bz2 $(addprefix $(TESTS)/Dockerfile.,$(IMAGE_TAGS))
+	docker images -q -f label=$(TEST_LABEL) | xargs -r docker rmi -f
 
 artifacts: $(ARTIFACTS)
 
@@ -97,14 +100,9 @@ $(DOCKER)/archive.tar.bz2: $(ARCHIVE)
 
 test: $(TEST_RESULTS)
 
-$(TEST_RESULTS): $(BUILD)/test-result-%: $(TESTS)/Dockerfile.% $(BUILD)/image-% $(shell find $(TESTS) -type f)
-	chmod -R a+rX $(TESTS)
-	docker build -t test-$* -f $< $(<D)
-	docker run --rm test-$*
+$(TEST_RESULTS): $(BUILD)/test-result-%: $(BUILD)/image-% $(shell find $(TESTS) -type f)
+	tests/run-all $(IMAGE_SLUG):$* $(TEST_LABEL)
 	touch $@
-
-$(TESTS)/Dockerfile.%: $(TESTS)/template.Dockerfile
-	echo "FROM $(IMAGE_SLUG):$*" | cat - $< >$@
 
 push: $(PUSHES) $(BUILD)/pushed-latest
 

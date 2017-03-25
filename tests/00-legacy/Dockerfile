@@ -1,3 +1,4 @@
+FROM -IMAGE-
 
 RUN mkdir /tests
 ADD user /tests/user
