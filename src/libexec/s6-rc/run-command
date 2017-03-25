@@ -1,9 +1,8 @@
 #!/bin/execlineb -S0
-ifelse { s6-test $# -eq 0 } {
-    s6-notice "Waiting forever"
-    foreground { s6-pause }
-    exit 0
+if -nt { s6-test $# -eq 0 }
+foreground {
+    /libexec/s6-rc/collect-exit-code
+    with-contenv -a
+    $@
 }
-/libexec/s6-rc/run-in-contenv
-$@
-
+/libexec/s6-rc/shutdown

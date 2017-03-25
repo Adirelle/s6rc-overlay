@@ -1,38 +1,12 @@
-#!/bin/execlineb
-import -i S6_SCAN_DIR
-define FIFO ${S6_SCAN_DIR}/.s6-svscan/control
-
-if {
-    if -t { s6-test ! -p $FIFO }
-    s6-mkfifo $FIFO
+#!/bin/execlineb -P
+multisubstitute {
+    import -i S6_SCAN_DIR
+    import -i S6_LIVE_DIR
+    import -i S6_VERBOSITY
+    import -i S6_COMPILED_DIR
+    import -i S6_INIT_TIMEOUT
+    import -i S6_START_TIMEOUT
+    import -i S6_TARGET
 }
-
-background {
-    /libexec/s6-rc/collect-exit-code
-
-    redirfd -w 3 $FIFO
-    fdclose 3
-
-    multisubstitute {
-        import -i S6_LIVE_DIR
-        import -i S6_VERBOSITY
-        import -i S6_COMPILED_DIR
-        import -i S6_INIT_TIMEOUT
-        import -i S6_START_TIMEOUT
-        import -i S6_TARGET
-    }
-
-    s6-notice "Starting services"
-    if { s6-rc-init -t $S6_INIT_TIMEOUT -c $S6_COMPILED_DIR -l $S6_LIVE_DIR $S6_SCAN_DIR }
-    if { s6-rc -t $S6_START_TIMEOUT -l $S6_LIVE_DIR -v $S6_VERBOSITY -u change $S6_TARGET }
-
-    elgetpositionals
-    emptyenv -P
-    $@
-}
-unexport !
-
-emptyenv -P
-redirfd -r 0 /dev/null
-s6-notice "Starting service supervisor"
-s6-svscan -s $S6_SCAN_DIR
+if { s6-rc-init -t $S6_INIT_TIMEOUT -c $S6_COMPILED_DIR -l $S6_LIVE_DIR $S6_SCAN_DIR }
+s6-rc -t $S6_START_TIMEOUT -l $S6_LIVE_DIR -v $S6_VERBOSITY -u change $S6_TARGET

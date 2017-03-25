@@ -1,13 +1,18 @@
 #!/bin/execlineb
-multisubstitute {
-    importas -uD -t MODE 1
-    import -i S6_LIVE_DIR
-    import -i S6_SCAN_DIR
-    import -D 5000 S6_STOP_TIMEOUT
-    import -D 1 S6_VERBOSITY
+import -i S6_SCAN_DIR
+cd $S6_SCAN_DIR
+if {
+    s6-setlock -n .shutdown.lock
+    if -n { s6-test -e .shutdown }
+    touch .shutdown
 }
-
-s6-notice "Stopping services"
-foreground { s6-rc -l $S6_LIVE_DIR -v $S6_VERBOSITY -t $S6_STOP_TIMEOUT -ad change }
+if {
+    multisubstitute {
+        import -i S6_LIVE_DIR
+        import -i S6_STOP_TIMEOUT
+        import -i S6_VERBOSITY
+    }
+    s6-rc -l $S6_LIVE_DIR -v $S6_VERBOSITY -t $S6_STOP_TIMEOUT -ad change
+}
 s6-notice "Stopping service supervisor"
-s6-svscanctl -s $MODE $S6_SCAN_DIR
+s6-svscanctl -zst .

@@ -1,4 +1,0 @@
-#!/bin/execlineb -S0
-s6-notice "Executing command"
-with-contenv -a
-$@

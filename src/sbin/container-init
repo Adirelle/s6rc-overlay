@@ -6,6 +6,10 @@ if {
     import -i S6_RUN_DIR
     /libexec/s6-rc/compile-service-database $S6_COMPILED_DIR ${S6_RUN_DIR}/source /etc/services.d
 }
-/libexec/s6-rc/start-services
+/libexec/s6-rc/start-service-supervisor
+if {
+    /libexec/s6-rc/collect-exit-code
+    /libexec/s6-rc/start-services
+}
 /libexec/s6-rc/run-command
 $@
