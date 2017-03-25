@@ -60,12 +60,13 @@ $(SUEXEC_MANIFEST): | $(CACHE)
 
 distclean: clean
 	rm -rf $(CACHE)
-	docker images -q "adirelle/s6rc-overlay:*" | xargs -r docker rmi -f
+	-docker images -q "adirelle/s6rc-overlay:*" | xargs -r docker rmi -f
 
 clean:
 	-chmod -R u+rwx $(ROOT)
 	rm -rf $(BUILD) $(TESTS)/archive.tar.bz2 $(addprefix $(TESTS)/Dockerfile.,$(IMAGE_TAGS))
-	docker images -q -f label=$(TEST_LABEL) | xargs -r docker rmi -f
+	-docker ps -q -f label=$(TEST_LABEL) | xargs -r docker rm -fv
+	-docker images -q -f label=$(TEST_LABEL) | xargs -r docker rmi -f
 
 artifacts: $(ARTIFACTS)
 
