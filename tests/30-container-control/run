@@ -14,7 +14,7 @@ sleep 5
 docker stop $ID >/dev/null
 
 STATE=$(state $ID)
-[[ $STATE = exited-0  -o $STATE = exited-137 ]]
+[[ $STATE = exited-0 || $STATE = exited-137 ]]
 
 docker start $ID >/dev/null
 
@@ -23,5 +23,5 @@ docker start $ID >/dev/null
 docker stop $ID >/dev/null
 
 STATE=$(state $ID)
-[[ $STATE = exited-0  -o $STATE = exited-137 ]]
+[[ $STATE = exited-0 || $STATE = exited-137 ]]
 
