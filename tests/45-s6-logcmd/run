@@ -1,0 +1,5 @@
+#!/bin/bash
+for code in 0 5; do
+    docker run --rm "$1" s6-logcmd exit $code
+    [[ $? = $code ]] || exit 1
+done
