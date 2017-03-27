@@ -1,0 +1,4 @@
+#!/bin/bash
+set -x
+docker run --rm "$1" exit 0
+[[ $? -ne 0 ]]
