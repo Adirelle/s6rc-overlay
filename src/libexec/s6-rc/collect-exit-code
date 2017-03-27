@@ -4,5 +4,8 @@ multisubstitute {
     importas -u EXITCODE ?
     import -i S6_SCAN_DIR
 }
-redirfd -w 1 ${S6_SCAN_DIR}/.exitcode
-s6-echo $EXITCODE
+foreground {
+    redirfd -w 1 ${S6_SCAN_DIR}/.exitcode
+    s6-echo $EXITCODE
+}
+exit $EXITCODE
