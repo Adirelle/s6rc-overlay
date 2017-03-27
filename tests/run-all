@@ -7,18 +7,25 @@ shift 2
 if [[ $# -eq 0 ]]; then
     set -- [0-9]*/run
 fi
-set -ex
 
 for TST in "$@"; do
     DIR="${TST%%/run}"
-    if [[ -f "$DIR/Dockerfile" ]]; then
-        DKFILE="$DIR/tmp-Dockerfile-$SLUG"
-        TSTIMG="test-$SLUG"
-        sed -e "/^FROM/s@-IMAGE-@$IMAGE@" "$DIR/Dockerfile" >"$DKFILE"
-        docker build --label "$LABEL" -t "$TSTIMG" -f "$DKFILE" "$DIR"
-        "$DIR/run" "$TSTIMG"
+    echo -e "\n\e[33m========== Test: $DIR ==========\e[0m\n"
+    if
+        if [[ -f "$DIR/Dockerfile" ]]; then
+            DKFILE="$DIR/tmp-Dockerfile-$SLUG"
+            TSTIMG="test-$SLUG"
+            sed -e "/^FROM/s@-IMAGE-@$IMAGE@" "$DIR/Dockerfile" >"$DKFILE"
+            docker build --label "$LABEL" -t "$TSTIMG" -f "$DKFILE" "$DIR"
+            "$DIR/run" "$TSTIMG"
+        else
+            "$DIR/run" "$IMAGE"
+        fi
+    then
+        echo -e "\n\e[33m========== $DIR: \e[32mPassed\e[0m"
     else
-        "$DIR/run" "$IMAGE"
+        echo -e "\n\e[31m========== $DIR: \e[31mFAILED !\e[0m"
+        exit 1
     fi
 done
 
