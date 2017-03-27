@@ -3,9 +3,13 @@ cd $(dirname $0)
 IMAGE="$1"
 SLUG="$(echo $IMAGE | tr -s :/ __)"
 LABEL="$2"
+shift 2
+if [[ $# -eq 0 ]]; then
+    set -- [0-9]*/run
+fi
 set -ex
 
-for TST in [0-9]*/run; do
+for TST in "$@"; do
     DIR="${TST%%/run}"
     if [[ -f "$DIR/Dockerfile" ]]; then
         DKFILE="$DIR/tmp-Dockerfile-$SLUG"
