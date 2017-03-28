@@ -1,6 +1,8 @@
 #!/bin/execlineb -S0
 s6-notice "Services started"
-if -nt { s6-test $# -eq 0 }
+if -nt {
+    s6-test $# -eq 0
+}
 foreground {
     /libexec/s6-rc/collect-exit-code
     with-contenv -a

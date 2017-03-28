@@ -1,5 +1,7 @@
 #!/bin/execlineb
-backtick -n __TMPLAUNCHENV { s6-uniquename /tmp/.launch-env }
+backtick -n __TMPLAUNCHENV {
+    s6-uniquename /tmp/.launch-en
+}
 multisubstitute {
     importas -u TMP __TMPLAUNCHENV
     importas -i USERHOME HOME
@@ -11,17 +13,22 @@ multisubstitute {
     import -uD 5000 S6_STOP_TIMEOUT
     import -uD services S6_TARGET
 }
-if { s6-mkdir -p -m 0755 $TMP }
+if {
+    s6-mkdir -p -m 0755 $TMP
+}
 if {
     emptyenv -P
     s6-dumpenv ${TMP}/env
 }
-if { /libexec/s6-rc/dump-user-env ${TMP}/user }
+if {
+    /libexec/s6-rc/dump-user-env ${TMP}/user
+}
 
 elgetpositionals
 
 emptyenv
 /bin/export PATH /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
+
 /libexec/su-exec root:root
 cd /
 
@@ -33,25 +40,40 @@ export S6_STOP_TIMEOUT $S6_STOP_TIMEOUT
 export S6_VERBOSITY $S6_VERBOSITY
 export S6_TARGET $S6_TARGET
 
+export S6_SERVICES_DIR /etc/services.d
 export S6_COMPILED_DIR ${S6_CONF_DIR}/compiled
 
 export S6_LAUNCH_ENV ${S6_RUN_DIR}/launch
 export S6_SCAN_DIR ${S6_RUN_DIR}/scandir
 export S6_LIVE_DIR ${S6_RUN_DIR}/live
 
-if { /libexec/s6-rc/empty-dir /run }
+if {
+    /libexec/s6-rc/empty-dir /run
+}
 if {
     import -i S6_LAUNCH_ENV
 
-    if { s6-hiercopy $S6_CONF_DIR $S6_RUN_DIR }
-    if { mv $TMP $S6_LAUNCH_ENV }
+    if {
+        s6-hiercopy $S6_CONF_DIR $S6_RUN_DIR
+    }
+    if {
+        mv $TMP $S6_LAUNCH_ENV
+    }
 
-    if { ln -snf ${S6_LAUNCH_ENV}/env ${USERHOME}/.envdir }
-    if { s6-dumpenv /root/.envdir }
+    if {
+        ln -snf ${S6_LAUNCH_ENV}/env ${USERHOME}/.envdir
+    }
+    if {
+        s6-dumpenv /root/.envdir
+    }
 
-    if { chown -R root:root $S6_LAUNCH_ENV }
+    if {
+        chown -R root:root $S6_LAUNCH_ENV
+    }
     chmod -R a+rX,go-w $S6_LAUNCH_ENV
 }
-if { /libexec/s6-rc/empty-dir /tmp }
+if {
+    /libexec/s6-rc/empty-dir /tmp
+}
 
 $@

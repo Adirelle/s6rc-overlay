@@ -1,8 +1,9 @@
 #!/bin/execlineb
 elgetopt acwueh
 import -uD "" ELGETOPT_h
-ifelse { s6-test -n $ELGETOPT_h }
-{ 
+ifelse {
+    s6-test -n $ELGETOPT_h
+} {
     foreground {
         import 0
         s6-echo -- $0 "[ -a | [-c] [-w] [-u] [-e] ] prog"
@@ -18,7 +19,9 @@ multisubstitute {
     import -uD $ELGETOPT_a ELGETOPT_e
 }
 backtick -n __APPLYUIDGID {
-    if -t { s6-test -n $ELGETOPT_u }
+    if -t {
+        s6-test -n $ELGETOPT_u
+    }
     s6-envdir ${LAUNCH_ENV}/user
     multisubstitute {
         import -i UID
@@ -26,21 +29,27 @@ backtick -n __APPLYUIDGID {
         import -i GIDLIST
     }
     s6-echo -- /bin/s6-applyuidgid -u $UID -g $GID -G $GIDLIST
-} 
+}
 backtick -n __CDWORKDIR {
-    if -t { s6-test -n $ELGETOPT_w }
+    if -t {
+        s6-test -n $ELGETOPT_w
+    }
     s6-envdir ${LAUNCH_ENV}/user
     import -i WORKDIR
     s6-echo -- /bin/cd $WORKDIR
-} 
+}
 backtick -n __CLEARENV {
-    if -t { s6-test -z $ELGETOPT_c }
+    if -t {
+        s6-test -z $ELGETOPT_c
+    }
     s6-echo -- -oP
-} 
+}
 backtick -n __ENVDIR {
-    if -t { s6-test -n $ELGETOPT_e }
+    if -t {
+        s6-test -n $ELGETOPT_e
+    }
     s6-echo -- /bin/s6-envdir ${LAUNCH_ENV}/env
-} 
+}
 multisubstitute {
     import -us __APPLYUIDGID
     import -us __CDWORKDIR
@@ -48,4 +57,9 @@ multisubstitute {
     import -us __ENVDIR
 }
 elgetpositionals
-$__APPLYUIDGID $__CDWORKDIR /bin/emptyenv $__CLEARENV $__ENVDIR $@
+$__APPLYUIDGID
+$__CDWORKDIR
+/bin/emptyenv
+$__CLEARENV
+$__ENVDIR
+$@

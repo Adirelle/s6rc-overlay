@@ -9,5 +9,7 @@ multisubstitute {
     import -i S6_TARGET
 }
 s6-notice "Starting services"
-if { s6-rc-init -t $S6_INIT_TIMEOUT -c $S6_COMPILED_DIR -l $S6_LIVE_DIR $S6_SCAN_DIR }
+if {
+    s6-rc-init -t $S6_INIT_TIMEOUT -c $S6_COMPILED_DIR -l $S6_LIVE_DIR $S6_SCAN_DIR
+}
 s6-rc -t $S6_START_TIMEOUT -l $S6_LIVE_DIR -v $S6_VERBOSITY -u change $S6_TARGET

@@ -1,9 +1,14 @@
 #!/bin/execlineb -P
 s6-notice "Service supervisor stopped"
-backtick -nD 255 EXITCODE { redirfd -r 0 .exitcode s6-cat }
+backtick -nD 255 EXITCODE {
+    redirfd -r 0 .exitcode
+    s6-cat
+}
 import -u EXITCODE
 foreground {
-    if -n { wait -it 2000 { } }
+    if -n {
+        wait -it 2000 { }
+    }
     s6-notice "Terminating processes"
     s6-nuke -t
 }

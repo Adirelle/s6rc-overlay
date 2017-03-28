@@ -2,7 +2,9 @@
 import -i S6_SCAN_DIR
 define FIFO ${S6_SCAN_DIR}/.s6-svscan/control
 if {
-    if -t { s6-test ! -p $FIFO }
+    if -t {
+        s6-test ! -p $FIFO
+    }
     s6-mkfifo $FIFO
 }
 background {
