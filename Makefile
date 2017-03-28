@@ -71,6 +71,7 @@ clean:
 artifacts: $(ARTIFACTS)
 
 $(ARCHIVE): $(SUEXEC_BIN) $(addprefix $(SRC)/,$(SRC_FILES)) $(SKAWARE_ARCHIVES) | $(BUILD)
+	@tools/printbanner "Building artifact $@"
 	tools/mkartifact $@ $(ROOT) $(SRC) $(SUEXEC_BIN) $(SKAWARE_ARCHIVES)
 
 $(SUEXEC_BIN): | $(CACHE)
@@ -93,6 +94,7 @@ $(SKAWARE_ARCHIVES): $(CACHE)/%: | $(CACHE)
 images: $(IMAGES)
 
 $(IMAGES): $(BUILD)/image-%: $(DOCKER)/Dockerfile.% $(DOCKER)/archive.tar.bz2
+	@tools/printbanner "Building image based on $*"
 	docker build --pull -t $(IMAGE_SLUG):$* -f $< $(<D)
 	touch $@
 
@@ -102,18 +104,21 @@ $(DOCKER)/archive.tar.bz2: $(ARCHIVE)
 test: $(TEST_RESULTS)
 
 $(TEST_RESULTS): $(BUILD)/test-result-%: $(BUILD)/image-% $(shell find $(TESTS) -type f)
+	@tools/printbanner "Running tests for $*"
 	tests/run-all $(IMAGE_SLUG):$* $(TEST_LABEL)
 	touch $@
 
 push: $(PUSHES) $(BUILD)/pushed-latest
 
 $(BUILD)/pushed-latest: $(BUILD)/image-alpine | $(HOME)/.docker/config.json
+	@tools/printbanner "Pushing latest and $(TAG)"
 	docker tag $(IMAGE_SLUG):alpine $(IMAGE_SLUG):latest
 	docker push $(IMAGE_SLUG):latest
 	docker tag $(IMAGE_SLUG):alpine $(IMAGE_SLUG):$(TAG)
 	docker push $(IMAGE_SLUG):$(TAG)
 
 $(PUSHES): $(BUILD)/pushed-%: $(BUILD)/image-% | $(HOME)/.docker/config.json
+	@tools/printbanner "Pushing $* and $(TAG)-$*"
 	docker push $(IMAGE_SLUG):$*
 	docker tag $(IMAGE_SLUG):$* $(IMAGE_SLUG):$(TAG)-$*
 	docker push $(IMAGE_SLUG):$(TAG)-$*

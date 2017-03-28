@@ -10,7 +10,7 @@ fi
 
 for TST in "$@"; do
     DIR="${TST%%/run}"
-    echo -e "\n\e[33m========== Test: $DIR ==========\e[0m\n"
+    ../tools/printbanner "Test: $DIR"
     if
         if [[ -f "$DIR/Dockerfile" ]]; then
             DKFILE="$DIR/tmp-Dockerfile-$SLUG"
@@ -22,10 +22,9 @@ for TST in "$@"; do
             "$DIR/run" "$IMAGE"
         fi
     then
-        echo -e "\n\e[33m========== $DIR: \e[32mPassed\e[0m"
+        ../tools/printbanner "$DIR: \e[32mPassed\e[0m"
     else
-        echo -e "\n\e[31m========== $DIR: \e[31mFAILED !\e[0m"
+        ../tools/printbanner "$DIR: \e[31mFAILED !\e[0m"
         exit 1
     fi
 done
-
