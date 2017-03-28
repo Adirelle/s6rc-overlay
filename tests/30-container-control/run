@@ -1,12 +1,11 @@
 #!/bin/bash
-set -exbm
 
 state() {
     docker inspect -f "{{.State.Status}}-{{.State.ExitCode}}" $1
 }
 
 ID=$(docker run -d "$1")
-trap "docker rm $ID >/dev/null" EXIT
+trap "docker logs $ID; docker rm $ID >/dev/null" EXIT
 sleep 5
 
 [[ $(state $ID) = running-0 ]]
@@ -24,4 +23,3 @@ docker stop $ID >/dev/null
 
 STATE=$(state $ID)
 [[ $STATE = exited-0 || $STATE = exited-137 ]]
-

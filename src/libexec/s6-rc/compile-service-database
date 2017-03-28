@@ -1,6 +1,6 @@
 #!/bin/execlineb -P
 import -i S6_COMPILED_DIR
-if {
+if -t {
     s6-test ! -d $S6_COMPILED_DIR
 }
 if {
