@@ -1,4 +1,2 @@
 #!/bin/bash
-set -x
-docker run --rm "$1"
-[[ $? -ne 0 ]]
+! docker run --rm "$1"
