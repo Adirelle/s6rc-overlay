@@ -3,7 +3,9 @@ import -i S6_SCAN_DIR
 cd $S6_SCAN_DIR
 if {
     s6-setlock -n .shutdown.lock
-    if -n { s6-test -e .shutdown }
+    if -n {
+        s6-test -e .shutdown
+    }
     touch .shutdown
 }
 backtick -n REASON {

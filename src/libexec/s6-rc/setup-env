@@ -8,6 +8,7 @@ multisubstitute {
     import -D 1 S6_VERBOSITY
     import -uD /etc/s6-rc S6_CONF_DIR
     import -uD /run/s6-rc S6_RUN_DIR
+    import -uD /etc/services.d S6_SERVICES_DIR
     import -uD 500 S6_INIT_TIMEOUT
     import -uD 120000 S6_START_TIMEOUT
     import -uD 5000 S6_STOP_TIMEOUT
@@ -39,8 +40,8 @@ export S6_START_TIMEOUT $S6_START_TIMEOUT
 export S6_STOP_TIMEOUT $S6_STOP_TIMEOUT
 export S6_VERBOSITY $S6_VERBOSITY
 export S6_TARGET $S6_TARGET
+export S6_SERVICES_DIR $S6_SERVICES_DIR
 
-export S6_SERVICES_DIR /etc/services.d
 export S6_COMPILED_DIR ${S6_CONF_DIR}/compiled
 
 export S6_LAUNCH_ENV ${S6_RUN_DIR}/launch

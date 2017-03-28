@@ -90,7 +90,7 @@ the format of service definitions.
 ### Default services
 
 s6rc-overlay comes with the following default services. They are defined in the
-`/etc/services.d` directory and can be configured using environment variables. 
+`/etc/services.d` directory and can be configured using environment variables.
 
 **Note:** in case you provided precompiled service database, these services
 would not be available.
@@ -177,6 +177,9 @@ milliseconds. Defauts to 500ms.
 minutes.
 
 * `S6_STOP_TIMEOUT`: the service stop timeout, in milliseconds. Defauts to 5s.
+
+* `S6_SERVICES_DIR`: the path to the service definitions. Defaults to
+`/etc/services.d`.
 
 * `S6_CONF_DIR`: the path to the initial configuration of s6rc-overlay. Defaults
 to `/etc/s6-rc`.
