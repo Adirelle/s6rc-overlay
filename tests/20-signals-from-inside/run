@@ -1,5 +1,0 @@
-#!/bin/bash
-set -e
-for sig in TERM HUP INT QUIT; do
-    docker run --rm "$1" sh -c "s6-logcmd kill -$sig 1; sleep 5; exit 1"
-done
