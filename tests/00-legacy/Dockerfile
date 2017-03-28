@@ -15,7 +15,6 @@ USER docker
 WORKDIR /tmp
 
 ENV S6_VERBOSITY=3 \
-    REMOVE_PATHS=/tests/user/80-should-be-removed \
     WRITABLE_PATHS=/usr/writable-file:/usr/writable-dir \
     WRITABLE_USER=docker \
     BAR=FOO

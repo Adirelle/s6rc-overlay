@@ -97,8 +97,11 @@ would not be available.
 
 #### `remove-paths`
 
-Recursively removes all files and directories matching `REMOVE_PATHS`. Does
-nothing if `REMOVE_PATHS` is undefined.
+Recursively removes files and directories.
+
+The targets are defined by a colon-separated list of glob patterns in `REMOVE_PATHS`.
+
+Unsets `REMOVE_PATHS` once done.
 
 #### `writable-paths`
 

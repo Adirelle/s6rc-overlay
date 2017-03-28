@@ -1,19 +1,21 @@
 with-contenv -we
-multisubstitute {
-    import -s REMOVE_PATHS
-    importas -D "" UNSPLITTED REMOVE_PATHS
-}
 if -t {
+    importas -D "" UNSPLITTED REMOVE_PATHS
     s6-test -n $UNSPLITTED
 }
-s6-notice "Removing ${UNSPLITTED}"
-forx -p GLOB { $REMOVE_PATHS }
-    import -u GLOB
-    elglob -0 TARGETS $GLOB
-    forx -p TARGET { $TARGETS }
-        import -u TARGET
-        if -t {
-            s6-test -e $TARGET
-        }
-        s6-logcmd
-        s6-rmrf $TARGET
+import -usd ":" REMOVE_PATHS
+if {
+    s6-notice "Removing files and directories"
+    forx -p GLOB { $REMOVE_PATHS }
+        import -u GLOB
+        elglob -0 TARGETS $GLOB
+        forx -p TARGET { $TARGETS }
+            import -u TARGET
+            if -t {
+                s6-test -e $TARGET
+            }
+            s6-logcmd
+            s6-rmrf $TARGET
+}
+import -i S6_LAUNCH_ENV
+s6-rmrf ${S6_LAUNCH_ENV}/env/REMOVE_PATHS
