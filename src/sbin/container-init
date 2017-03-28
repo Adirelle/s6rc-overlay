@@ -1,10 +1,7 @@
 #!/bin/execlineb -S0
 /libexec/s6-rc/setup-env
 if {
-    import -i S6_COMPILED_DIR
-    if -t { s6-test ! -d $S6_COMPILED_DIR }
-    import -i S6_RUN_DIR
-    /libexec/s6-rc/compile-service-database $S6_COMPILED_DIR ${S6_RUN_DIR}/source /etc/services.d
+    /libexec/s6-rc/compile-service-database
 }
 /libexec/s6-rc/start-service-supervisor
 ifelse {

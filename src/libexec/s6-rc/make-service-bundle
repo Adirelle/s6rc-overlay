@@ -1,13 +1,18 @@
 #!/bin/execlineb
-multisubstitute {
-    importas -i SRC 1
-    importas -i DEST 2
-}
-s6-notice "Creating the services bundle"
-if { s6-mkdir -p ${DEST}/services }
+import -i S6_SERVICES_DIR
 if {
-    redirfd -w 1 ${DEST}/services/contents
-    s6-ls ${SRC}
+    ifelse {
+        s6-test ! -d ${S6_SERVICES_DIR}/services
+    } {
+        s6-notice "Creating the services bundle"
+        if {
+            s6-mkdir -p ${S6_SERVICES_DIR}/services
+        }
+        redirfd -w 1 ${S6_SERVICES_DIR}/services/type
+        s6-echo bundle
+    }
+    s6-notice "Updating the services bundle"
 }
-redirfd -w 1 ${DEST}/services/type
-s6-echo bundle
+
+redirfd -w 1 ${S6_SERVICES_DIR}/services/contents
+s6-ls -x services ${S6_SERVICES_DIR}

@@ -4,12 +4,16 @@ multisubstitute {
     import -sd":" WRITABLE_PATHS
     import -D "" WRITABLE_USER
 }
-if -t { s6-test -n $UNSPLITTED -a -n $WRITABLE_USER }
-foreground { s6-notice "Making ${UNSPLITTED} writable for ${WRITABLE_USER}" }
+if -t {
+    s6-test -n $UNSPLITTED -a -n $WRITABLE_USER
+}
+s6-notice "Making ${UNSPLITTED} writable for ${WRITABLE_USER}"
 forx -p TARGET { $WRITABLE_PATHS }
     import -u TARGET
     if {
-        if -t { s6-test ! -e $TARGET }
+        if -t {
+            s6-test ! -e $TARGET
+        }
         s6-logcmd
         s6-mkdir -p $TARGET
     }
