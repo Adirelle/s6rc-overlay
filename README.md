@@ -105,11 +105,15 @@ Unsets `REMOVE_PATHS` once done.
 
 #### `writable-paths`
 
-Recursively gives write permissions to `WRITABLE_USER` on all files and
-directories matching `WRITABLE_PATHS`, using `setfacl`. Does nothing if any of
-these variables is undefined.
+Recursively gives write permissions on a set of directories and files to a user. Creates
+directory for targets that do not exist.
 
-It depends on `remove-paths`.
+The user is defined by the `WRITABLE_USER` and the files/directories by a colon-separated
+list in  `WRITABLE_PATHS`.
+
+Runs after `remove-paths` and unsets the variables once done.
+
+*Note*: it uses `setfacl`, so this command has to been available.
 
 #### `init`
 

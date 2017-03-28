@@ -7,15 +7,28 @@ multisubstitute {
 if -t {
     s6-test -n $UNSPLITTED -a -n $WRITABLE_USER
 }
-s6-notice "Making ${UNSPLITTED} writable for ${WRITABLE_USER}"
-forx -p TARGET { $WRITABLE_PATHS }
-    import -u TARGET
-    if {
-        if -t {
-            s6-test ! -e $TARGET
+if {
+    s6-notice "Making ${UNSPLITTED} writable for ${WRITABLE_USER}"
+    forx -p TARGET { $WRITABLE_PATHS }
+        import -u TARGET
+        if {
+            if -t {
+                s6-test ! -e $TARGET
+            }
+            s6-logcmd
+            s6-mkdir -p $TARGET
+        }
+        ifelse {
+            s6-test -d $TARGET
+        } {
+            s6-logcmd
+            setfacl -R -m u:${WRITABLE_USER}:rwX -m d:u:${WRITABLE_USER}:rwX ${TARGET}
         }
         s6-logcmd
-        s6-mkdir -p $TARGET
-    }
-    s6-logcmd
-    setfacl -R -m u:${WRITABLE_USER}:rwX -m d:u:${WRITABLE_USER}:rwX ${TARGET}
+        setfacl -m u:${WRITABLE_USER}:rwX ${TARGET}
+}
+import -i S6_LAUNCH_ENV
+if {
+    s6-rmrf ${S6_LAUNCH_ENV}/env/WRITABLE_PATHS
+}
+s6-rmrf ${S6_LAUNCH_ENV}/env/WRITABLE_USER

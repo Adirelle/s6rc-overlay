@@ -1,0 +1,24 @@
+#!/bin/execlineb -P
+if {
+    s6-logcmd
+    redirfd -w 1 /opt/writable/somefile
+    s6-echo OK
+}
+if {
+    s6-logcmd
+    redirfd -a 1 /etc/shells
+    s6-echo /bin/bash
+}
+if {
+    s6-logcmd
+    redirfd -w 1 foo/somefile
+    s6-echo OK
+}
+if {
+    import -D "**unset**" WRITABLE_PATHS
+    s6-logcmd
+    s6-test $WRITABLE_PATHS = **unset**
+}
+import -D "**unset**" WRITABLE_USER
+s6-logcmd
+s6-test $WRITABLE_USER = **unset**
