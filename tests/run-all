@@ -4,24 +4,37 @@ IMAGE="$1"
 SLUG="$(echo $IMAGE | tr -s :/ __)"
 LABEL="$2"
 shift 2
+
+buildImage() {
+    local DIR="$1"
+    if [[ -f "$DIR/Dockerfile" ]]; then
+        local DKFILE="$DIR/tmp-Dockerfile-$SLUG"
+        TSTIMG="test-$SLUG"
+        sed -e "/^FROM/s@-IMAGE-@$IMAGE@" "$DIR/Dockerfile" >"$DKFILE"
+        docker build --label "$LABEL" -t "$TSTIMG" -f "$DKFILE" "$DIR" >&2
+        echo "$TSTIMG"
+    else
+        echo "$IMAGE"
+    fi
+}
+
+runTest() {
+    local DIR="$1"
+    local TSTIMG="$2"
+    if [[ -x "$DIR/run" ]]; then
+        "$DIR/run" "$TSTIMG"
+    else
+        docker run --rm "$TSTIMG"
+    fi
+}
+
 if [[ $# -eq 0 ]]; then
-    set -- [0-9]*/run
+    set -- [0-9][0-9]-*
 fi
 
-for TST in "$@"; do
-    DIR="${TST%%/run}"
+for DIR in "$@"; do
     ../tools/printbanner "Test: $DIR"
-    if
-        if [[ -f "$DIR/Dockerfile" ]]; then
-            DKFILE="$DIR/tmp-Dockerfile-$SLUG"
-            TSTIMG="test-$SLUG"
-            sed -e "/^FROM/s@-IMAGE-@$IMAGE@" "$DIR/Dockerfile" >"$DKFILE"
-            docker build --label "$LABEL" -t "$TSTIMG" -f "$DKFILE" "$DIR"
-            "$DIR/run" "$TSTIMG"
-        else
-            "$DIR/run" "$IMAGE"
-        fi
-    then
+    if TSTIMG=$(buildImage "$DIR") && runTest "$DIR" "$TSTIMG"; then
         ../tools/printbanner "$DIR: \e[32mPassed\e[0m"
     else
         ../tools/printbanner "$DIR: \e[31mFAILED !\e[0m"
