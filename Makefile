@@ -12,6 +12,7 @@ ARCH ?= amd64
 TAG ?= master
 REPO_OWNER ?= Adirelle
 REPO_SLUG ?= Adirelle/s6rc-overlay
+DISTRIBS ?= $(patsubst $(DOCKER)/Dockerfile.%,%,$(wildcard $(DOCKER)/Dockerfile.*))
 
 SKAWARE_VERSION = 1.19.1
 SKAWARE_SOURCE = https://github.com/just-containers/skaware/releases/download/v$(SKAWARE_VERSION)
@@ -42,7 +43,7 @@ MANIFEST = $(BUILD)/manifest.txt
 ARTIFACTS = $(ARCHIVE) $(CHECKSUM) $(MANIFEST)
 
 IMAGE_SLUG = $(shell echo $(REPO_SLUG) | tr '[:upper:]' '[:lower:]')
-IMAGE_TAGS = $(patsubst $(DOCKER)/Dockerfile.%,%,$(wildcard $(DOCKER)/Dockerfile.*))
+IMAGE_TAGS = $(DISTRIBS)
 IMAGES = $(addprefix $(BUILD)/image-,$(IMAGE_TAGS))
 TEST_LABEL = test_image_for=s6rc-overlay
 TEST_RESULTS = $(addprefix $(BUILD)/test-result-,$(IMAGE_TAGS))
