@@ -6,6 +6,7 @@ CACHE = .cache
 SRC = src
 DOCKER = docker
 TESTS = tests
+TEST_ONLY =
 ROOT = $(BUILD)/$(ARCH)
 
 ARCH ?= amd64
@@ -106,7 +107,7 @@ test: $(TEST_RESULTS)
 
 $(TEST_RESULTS): $(BUILD)/test-result-%: $(BUILD)/image-% $(shell find $(TESTS) -type f)
 	@tools/printbanner "Running tests for $*"
-	tests/run-all $(IMAGE_SLUG):$* $(TEST_LABEL)
+	tests/run-all $(IMAGE_SLUG):$* $(TEST_LABEL) $(TEST_ONLY)
 	touch $@
 
 push: $(PUSHES) $(BUILD)/pushed-latest
