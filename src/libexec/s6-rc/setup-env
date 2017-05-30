@@ -18,6 +18,7 @@ if {
     s6-mkdir -p -m 0755 $TMP
 }
 if {
+    unexport S6_USER
     emptyenv -P
     s6-dumpenv ${TMP}/env
 }

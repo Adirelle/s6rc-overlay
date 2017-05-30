@@ -8,17 +8,18 @@ if {
     redirfd -w 1 ${1}/WORKDIR
     s6-echo $WORKDIR
 }
+importas -u USER S6_USER
 if {
     redirfd -w 1 ${1}/UID
-    id -u
+    id -u $USER
 }
 if {
     redirfd -w 1 ${1}/GID
-    id -g
+    id -g $USER
 }
 if {
     redirfd -w 1 ${1}/GIDLIST
-    pipeline { id -G }
+    pipeline { id -G $USER }
     tr " " ,
 }
 wait -r { }

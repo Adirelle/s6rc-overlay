@@ -177,6 +177,8 @@ He is a list of environment variables that alters s6rc-overlay behavior:
 
 * `S6_TARGET`: the service to bring up at startup. Defaults to `services`. If empty or set to `none`, services will not be started.
 
+* `S6_USER`: if defined, execute the command as the indicated user. Take an single user name or user id. Can be used with Docker when you cannot use the --user switchs.  
+
 * `S6_INIT_TIMEOUT`: the initialisation timeout (see s6-rc-init), in
 milliseconds. Defauts to 500ms.
 

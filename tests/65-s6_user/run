@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+docker run --rm --user root "$1" s6-logcmd sh -xc 's6-test `id -un` = root -a `id -gn` = root'
+
+docker run --rm --user root -e S6_USER=daemon "$1" s6-logcmd sh -xc 's6-test `id -un` = daemon -a `id -gn` = daemon'
+
+docker run --rm --user daemon -e S6_USER=root "$1" s6-logcmd sh -xc 's6-test `id -un` = root -a `id -gn` = root'
