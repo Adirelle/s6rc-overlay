@@ -5,7 +5,9 @@ services:
   - docker
 
 env:
-  - ARCH=amd64
+  - ARCH=amd64 DISTRIBS=alpine
+  - ARCH=amd64 DISTRIBS=jessie
+  - ARCH=amd64 DISTRIBS=stretch
 
 before_script:
   - make clean
