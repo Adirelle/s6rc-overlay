@@ -1,18 +1,18 @@
 #!/bin/execlineb
-importas -i S6_SERVICES_DIR S6_SERVICES_DIR
+importas -i SERVICES_DIR S6_SERVICES_DIR
 if {
     ifelse {
-        s6-test ! -d ${S6_SERVICES_DIR}/services
+        s6-test ! -d ${SERVICES_DIR}/services
     } {
         s6-notice "Creating the services bundle"
         if {
-            s6-mkdir -p ${S6_SERVICES_DIR}/services
+            s6-mkdir -p ${SERVICES_DIR}/services
         }
-        redirfd -w 1 ${S6_SERVICES_DIR}/services/type
+        redirfd -w 1 ${SERVICES_DIR}/services/type
         s6-echo bundle
     }
     s6-notice "Updating the services bundle"
 }
 
-redirfd -w 1 ${S6_SERVICES_DIR}/services/contents
-s6-ls -x services ${S6_SERVICES_DIR}
+redirfd -w 1 ${SERVICES_DIR}/services/contents
+s6-ls -x services ${SERVICES_DIR}

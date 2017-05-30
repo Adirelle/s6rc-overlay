@@ -1,23 +1,23 @@
 #!/bin/execlineb -P
 multisubstitute {
-    importas -i S6_SCAN_DIR S6_SCAN_DIR
-    importas -i S6_LIVE_DIR S6_LIVE_DIR
-    importas -i S6_VERBOSITY S6_VERBOSITY
-    importas -i S6_COMPILED_DIR S6_COMPILED_DIR
-    importas -i S6_INIT_TIMEOUT S6_INIT_TIMEOUT
-    importas -i S6_START_TIMEOUT S6_START_TIMEOUT
-    importas -D "none" S6_TARGET S6_TARGET
+    importas -i SCAN_DIR S6_SCAN_DIR
+    importas -i LIVE_DIR S6_LIVE_DIR
+    importas -i VERBOSITY S6_VERBOSITY
+    importas -i COMPILED_DIR S6_COMPILED_DIR
+    importas -i INIT_TIMEOUT S6_INIT_TIMEOUT
+    importas -i START_TIMEOUT S6_START_TIMEOUT
+    importas -D "none" TARGET S6_TARGET
 }
 if {
     s6-notice "Initializing s6-rc"
-    s6-rc-init -t $S6_INIT_TIMEOUT -c $S6_COMPILED_DIR -l $S6_LIVE_DIR $S6_SCAN_DIR
+    s6-rc-init -t $INIT_TIMEOUT -c $COMPILED_DIR -l $LIVE_DIR $SCAN_DIR
 }
 s6-notice "s6-rc initialized"
 if -t {
-    s6-test -n $S6_TARGET -a $S6_TARGET != none
+    s6-test -n $TARGET -a $TARGET != none
 }
 s6-notice "Starting services"
 if {
-    s6-rc -t $S6_START_TIMEOUT -l $S6_LIVE_DIR -v $S6_VERBOSITY -u change $S6_TARGET
+    s6-rc -t $START_TIMEOUT -l $LIVE_DIR -v $VERBOSITY -u change $TARGET
 }
 s6-notice "Services started"

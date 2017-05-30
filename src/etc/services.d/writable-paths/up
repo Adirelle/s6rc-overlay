@@ -1,15 +1,15 @@
 with-contenv -ew
 multisubstitute {
     importas -D "" UNSPLITTED WRITABLE_PATHS
-    importas -sd":" WRITABLE_PATHS WRITABLE_PATHS
-    importas -D "" WRITABLE_USER WRITABLE_USER
+    importas -sd":" PATHS WRITABLE_PATHS
+    importas -D "" USER WRITABLE_USER
 }
 if -t {
-    s6-test -n $UNSPLITTED -a -n $WRITABLE_USER
+    s6-test -n $UNSPLITTED -a -n $USER
 }
 if {
-    s6-notice "Making ${UNSPLITTED} writable for ${WRITABLE_USER}"
-    forx -p TARGET { $WRITABLE_PATHS }
+    s6-notice "Making ${UNSPLITTED} writable for ${USER}"
+    forx -p TARGET { $PATHS }
         importas -u TARGET TARGET
         if {
             if -t {
@@ -22,13 +22,13 @@ if {
             s6-test -d $TARGET
         } {
             s6-logcmd
-            setfacl -R -m u:${WRITABLE_USER}:rwX -m d:u:${WRITABLE_USER}:rwX ${TARGET}
+            setfacl -R -m u:${USER}:rwX -m d:u:${USER}:rwX ${TARGET}
         }
         s6-logcmd
-        setfacl -m u:${WRITABLE_USER}:rwX ${TARGET}
+        setfacl -m u:${USER}:rwX ${TARGET}
 }
-importas -i S6_LAUNCH_ENV S6_LAUNCH_ENV
+importas -i LAUNCH_ENV S6_LAUNCH_ENV
 if {
-    s6-rmrf ${S6_LAUNCH_ENV}/env/WRITABLE_PATHS
+    s6-rmrf ${LAUNCH_ENV}/env/WRITABLE_PATHS
 }
-s6-rmrf ${S6_LAUNCH_ENV}/env/WRITABLE_USER
+s6-rmrf ${LAUNCH_ENV}/env/WRITABLE_USER

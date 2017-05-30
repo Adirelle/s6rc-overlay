@@ -1,8 +1,8 @@
 #!/bin/execlineb
 elgetopt acwueh
-importas -uD "" ELGETOPT_h ELGETOPT_h
+importas -uD "" HELP ELGETOPT_h
 ifelse {
-    s6-test -n $ELGETOPT_h
+    s6-test -n $HELP
 } {
     foreground {
         importas SELF 0
@@ -10,43 +10,43 @@ ifelse {
     }
     exit 2
 }
-importas -uD "" ELGETOPT_a ELGETOPT_a
+importas -uD "" DO_ALL ELGETOPT_a
 multisubstitute {
     importas -i LAUNCH_ENV S6_LAUNCH_ENV
-    importas -uD $ELGETOPT_a ELGETOPT_c ELGETOPT_c
-    importas -uD $ELGETOPT_a ELGETOPT_w ELGETOPT_w
-    importas -uD $ELGETOPT_a ELGETOPT_u ELGETOPT_u
-    importas -uD $ELGETOPT_a ELGETOPT_e ELGETOPT_e
+    importas -uD $DO_ALL CLEAR_ENV ELGETOPT_c
+    importas -uD $DO_ALL CD_WORKDIR ELGETOPT_w
+    importas -uD $DO_ALL SET_UID_GID ELGETOPT_u
+    importas -uD $DO_ALL LOAD_ENV ELGETOPT_e
 }
 backtick -n __APPLYUIDGID {
     if -t {
-        s6-test -n $ELGETOPT_u
+        s6-test -n $SET_UID_GID
     }
     s6-envdir ${LAUNCH_ENV}/user
     multisubstitute {
-        importas -i UID UID
-        importas -i GID GID
-        importas -i GIDLIST GIDLIST
+        importas -i U UID
+        importas -i G GID
+        importas -i GL GIDLIST
     }
-    s6-echo -- /bin/s6-applyuidgid -u $UID -g $GID -G $GIDLIST
+    s6-echo -- /bin/s6-applyuidgid -u $U -g $G -G $GL
 }
 backtick -n __CDWORKDIR {
     if -t {
-        s6-test -n $ELGETOPT_w
+        s6-test -n $CD_WORKDIR
     }
     s6-envdir ${LAUNCH_ENV}/user
-    importas -i WORKDIR WORKDIR
-    s6-echo -- /bin/cd $WORKDIR
+    importas -i WD WORKDIR
+    s6-echo -- /bin/cd $WD
 }
 backtick -n __CLEARENV {
     if -t {
-        s6-test -z $ELGETOPT_c
+        s6-test -z $CLEAR_ENV
     }
     s6-echo -- -oP
 }
 backtick -n __ENVDIR {
     if -t {
-        s6-test -n $ELGETOPT_e
+        s6-test -n $LOAD_ENV
     }
     s6-echo -- /bin/s6-envdir ${LAUNCH_ENV}/env
 }

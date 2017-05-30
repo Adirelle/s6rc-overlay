@@ -1,14 +1,14 @@
 #!/bin/execlineb -P
-importas -i S6_COMPILED_DIR S6_COMPILED_DIR
+importas -i COMPILED_DIR S6_COMPILED_DIR
 if -t {
-    s6-test ! -d $S6_COMPILED_DIR
+    s6-test ! -d $COMPILED_DIR
 }
 if {
     /libexec/s6-rc/make-service-bundle
 }
 s6-notice "Compiling the service database"
 multisubstitute {
-    importas -i S6_SERVICES_DIR S6_SERVICES_DIR
-    importas -i S6_VERBOSITY S6_VERBOSITY
+    importas -i SERVICES_DIR S6_SERVICES_DIR
+    importas -i VERBOSITY S6_VERBOSITY
 }
-s6-rc-compile -v $S6_VERBOSITY $S6_COMPILED_DIR $S6_SERVICES_DIR
+s6-rc-compile -v $VERBOSITY $COMPILED_DIR $SERVICES_DIR

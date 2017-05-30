@@ -1,6 +1,6 @@
 #!/bin/execlineb
-importas -i S6_SCAN_DIR S6_SCAN_DIR
-cd $S6_SCAN_DIR
+importas -i SCAN_DIR S6_SCAN_DIR
+cd $SCAN_DIR
 if {
     s6-setlock -n .shutdown.lock
     if -n {
@@ -16,12 +16,12 @@ importas -u REASON REASON
 s6-notice "Shutting down: ${REASON}"
 if {
     multisubstitute {
-        importas -i S6_LIVE_DIR S6_LIVE_DIR
-        importas -i S6_STOP_TIMEOUT S6_STOP_TIMEOUT
-        importas -i S6_VERBOSITY S6_VERBOSITY
+        importas -i LIVE_DIR S6_LIVE_DIR
+        importas -i TIMEOUT S6_STOP_TIMEOUT
+        importas -i VERBOSITY S6_VERBOSITY
     }
     s6-notice "Stopping services"
-    s6-rc -l $S6_LIVE_DIR -v $S6_VERBOSITY -t $S6_STOP_TIMEOUT -ad change
+    s6-rc -l $LIVE_DIR -v $VERBOSITY -t $TIMEOUT -ad change
 }
 s6-notice "Services stopped"
 s6-notice "Stopping service supervisor"

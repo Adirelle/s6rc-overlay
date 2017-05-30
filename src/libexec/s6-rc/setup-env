@@ -5,14 +5,14 @@ backtick -n __TMPLAUNCHENV {
 multisubstitute {
     importas -u TMP __TMPLAUNCHENV
     importas -i USERHOME HOME
-    importas -D 1 S6_VERBOSITY S6_VERBOSITY
-    importas -uD /etc/s6-rc S6_CONF_DIR S6_CONF_DIR
-    importas -uD /run/s6-rc S6_RUN_DIR S6_RUN_DIR
-    importas -uD /etc/services.d S6_SERVICES_DIR S6_SERVICES_DIR
-    importas -uD 500 S6_INIT_TIMEOUT S6_INIT_TIMEOUT
-    importas -uD 120000 S6_START_TIMEOUT S6_START_TIMEOUT
-    importas -uD 5000 S6_STOP_TIMEOUT S6_STOP_TIMEOUT
-    importas -uD services S6_TARGET S6_TARGET
+    importas -D 1 VERBOSITY S6_VERBOSITY
+    importas -uD /etc/s6-rc CONF_DIR S6_CONF_DIR
+    importas -uD /run/s6-rc RUN_DIR S6_RUN_DIR
+    importas -uD /etc/services.d SERVICES_DIR S6_SERVICES_DIR
+    importas -uD 500 INIT_TIMEOUT S6_INIT_TIMEOUT
+    importas -uD 120000 START_TIMEOUT S6_START_TIMEOUT
+    importas -uD 5000 STOP_TIMEOUT S6_STOP_TIMEOUT
+    importas -uD services TARGET S6_TARGET
 }
 if {
     s6-mkdir -p -m 0755 $TMP
@@ -34,45 +34,45 @@ emptyenv
 /libexec/su-exec root:root
 cd /
 
-export S6_CONF_DIR $S6_CONF_DIR
-export S6_RUN_DIR $S6_RUN_DIR
-export S6_INIT_TIMEOUT $S6_INIT_TIMEOUT
-export S6_START_TIMEOUT $S6_START_TIMEOUT
-export S6_STOP_TIMEOUT $S6_STOP_TIMEOUT
-export S6_VERBOSITY $S6_VERBOSITY
-export S6_TARGET $S6_TARGET
-export S6_SERVICES_DIR $S6_SERVICES_DIR
+export S6_CONF_DIR $CONF_DIR
+export S6_RUN_DIR $RUN_DIR
+export S6_INIT_TIMEOUT $INIT_TIMEOUT
+export S6_START_TIMEOUT $START_TIMEOUT
+export S6_STOP_TIMEOUT $STOP_TIMEOUT
+export S6_VERBOSITY $VERBOSITY
+export S6_TARGET $TARGET
+export S6_SERVICES_DIR $SERVICES_DIR
 
-export S6_COMPILED_DIR ${S6_CONF_DIR}/compiled
+export S6_COMPILED_DIR ${CONF_DIR}/compiled
 
-export S6_LAUNCH_ENV ${S6_RUN_DIR}/launch
-export S6_SCAN_DIR ${S6_RUN_DIR}/scandir
-export S6_LIVE_DIR ${S6_RUN_DIR}/live
+export S6_LAUNCH_ENV ${RUN_DIR}/launch
+export S6_SCAN_DIR ${RUN_DIR}/scandir
+export S6_LIVE_DIR ${RUN_DIR}/live
 
 if {
     /libexec/s6-rc/empty-dir /run
 }
 if {
-    importas -i S6_LAUNCH_ENV S6_LAUNCH_ENV
+    importas -i LAUNCH_ENV S6_LAUNCH_ENV
 
     if {
-        s6-hiercopy $S6_CONF_DIR $S6_RUN_DIR
+        s6-hiercopy $CONF_DIR $RUN_DIR
     }
     if {
-        mv $TMP $S6_LAUNCH_ENV
+        mv $TMP $LAUNCH_ENV
     }
 
     if {
-        ln -snf ${S6_LAUNCH_ENV}/env ${USERHOME}/.envdir
+        ln -snf ${LAUNCH_ENV}/env ${USERHOME}/.envdir
     }
     if {
         s6-dumpenv /root/.envdir
     }
 
     if {
-        chown -R root:root $S6_LAUNCH_ENV
+        chown -R root:root $LAUNCH_ENV
     }
-    chmod -R a+rX,go-w $S6_LAUNCH_ENV
+    chmod -R a+rX,go-w $LAUNCH_ENV
 }
 if {
     /libexec/s6-rc/empty-dir /tmp

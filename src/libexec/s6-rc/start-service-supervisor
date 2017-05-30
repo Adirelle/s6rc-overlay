@@ -1,6 +1,6 @@
 #!/bin/execlineb
-importas -i S6_SCAN_DIR S6_SCAN_DIR
-define FIFO ${S6_SCAN_DIR}/.s6-svscan/control
+importas -i SCAN_DIR S6_SCAN_DIR
+define FIFO ${SCAN_DIR}/.s6-svscan/control
 if {
     if -t {
         s6-test ! -p $FIFO
@@ -18,4 +18,4 @@ background {
 emptyenv -Pc
 redirfd -r 0 /dev/null
 s6-notice "Starting service supervisor"
-s6-svscan -s $S6_SCAN_DIR
+s6-svscan -s $SCAN_DIR
