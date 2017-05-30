@@ -2,7 +2,7 @@
 backtick -n _PREFIX { s6-logprefix }
 fdreserve 2
 multisubstitute {
-    import -u _PREFIX
+    importas -u _PREFIX _PREFIX
     importas -u ORIG_STDOUT FD0
     importas -u ORIG_STDERR FD1
 }

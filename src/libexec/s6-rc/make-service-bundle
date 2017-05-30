@@ -1,5 +1,5 @@
 #!/bin/execlineb
-import -i S6_SERVICES_DIR
+importas -i S6_SERVICES_DIR S6_SERVICES_DIR
 if {
     ifelse {
         s6-test ! -d ${S6_SERVICES_DIR}/services

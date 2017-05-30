@@ -7,9 +7,9 @@ backtick -nD 0 PREV {
     redirfd -r 0 $FILE
     s6-cat
 }
-import -u PREV
+importas -u PREV PREV
 backtick -n CUR { s6-expr $PREV + 1 }
-import -u CUR
+importas -u CUR CUR
 foreground {
     redirfd -w 1 $FILE
     s6-echo $CUR

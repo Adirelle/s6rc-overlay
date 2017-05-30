@@ -5,14 +5,14 @@ backtick -n __TMPLAUNCHENV {
 multisubstitute {
     importas -u TMP __TMPLAUNCHENV
     importas -i USERHOME HOME
-    import -D 1 S6_VERBOSITY
-    import -uD /etc/s6-rc S6_CONF_DIR
-    import -uD /run/s6-rc S6_RUN_DIR
-    import -uD /etc/services.d S6_SERVICES_DIR
-    import -uD 500 S6_INIT_TIMEOUT
-    import -uD 120000 S6_START_TIMEOUT
-    import -uD 5000 S6_STOP_TIMEOUT
-    import -uD services S6_TARGET
+    importas -D 1 S6_VERBOSITY S6_VERBOSITY
+    importas -uD /etc/s6-rc S6_CONF_DIR S6_CONF_DIR
+    importas -uD /run/s6-rc S6_RUN_DIR S6_RUN_DIR
+    importas -uD /etc/services.d S6_SERVICES_DIR S6_SERVICES_DIR
+    importas -uD 500 S6_INIT_TIMEOUT S6_INIT_TIMEOUT
+    importas -uD 120000 S6_START_TIMEOUT S6_START_TIMEOUT
+    importas -uD 5000 S6_STOP_TIMEOUT S6_STOP_TIMEOUT
+    importas -uD services S6_TARGET S6_TARGET
 }
 if {
     s6-mkdir -p -m 0755 $TMP
@@ -53,7 +53,7 @@ if {
     /libexec/s6-rc/empty-dir /run
 }
 if {
-    import -i S6_LAUNCH_ENV
+    importas -i S6_LAUNCH_ENV S6_LAUNCH_ENV
 
     if {
         s6-hiercopy $S6_CONF_DIR $S6_RUN_DIR

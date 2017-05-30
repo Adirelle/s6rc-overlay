@@ -1,12 +1,12 @@
 #!/bin/execlineb -P
 multisubstitute {
-    import -i S6_SCAN_DIR
-    import -i S6_LIVE_DIR
-    import -i S6_VERBOSITY
-    import -i S6_COMPILED_DIR
-    import -i S6_INIT_TIMEOUT
-    import -i S6_START_TIMEOUT
-    import -D "none" S6_TARGET
+    importas -i S6_SCAN_DIR S6_SCAN_DIR
+    importas -i S6_LIVE_DIR S6_LIVE_DIR
+    importas -i S6_VERBOSITY S6_VERBOSITY
+    importas -i S6_COMPILED_DIR S6_COMPILED_DIR
+    importas -i S6_INIT_TIMEOUT S6_INIT_TIMEOUT
+    importas -i S6_START_TIMEOUT S6_START_TIMEOUT
+    importas -D "none" S6_TARGET S6_TARGET
 }
 if {
     s6-notice "Initializing s6-rc"

@@ -1,5 +1,5 @@
 #!/bin/execlineb
-import -i S6_SCAN_DIR
+importas -i S6_SCAN_DIR S6_SCAN_DIR
 cd $S6_SCAN_DIR
 if {
     s6-setlock -n .shutdown.lock
@@ -9,16 +9,16 @@ if {
     touch .shutdown
 }
 backtick -n REASON {
-    import -i 0
-    s6-basename $0
+    importas -i SELF 0
+    s6-basename $SELF
 }
-import -u REASON
+importas -u REASON REASON
 s6-notice "Shutting down: ${REASON}"
 if {
     multisubstitute {
-        import -i S6_LIVE_DIR
-        import -i S6_STOP_TIMEOUT
-        import -i S6_VERBOSITY
+        importas -i S6_LIVE_DIR S6_LIVE_DIR
+        importas -i S6_STOP_TIMEOUT S6_STOP_TIMEOUT
+        importas -i S6_VERBOSITY S6_VERBOSITY
     }
     s6-notice "Stopping services"
     s6-rc -l $S6_LIVE_DIR -v $S6_VERBOSITY -t $S6_STOP_TIMEOUT -ad change

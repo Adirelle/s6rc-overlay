@@ -1,5 +1,5 @@
 #!/bin/execlineb -P
-import -i S6_COMPILED_DIR
+importas -i S6_COMPILED_DIR S6_COMPILED_DIR
 if -t {
     s6-test ! -d $S6_COMPILED_DIR
 }
@@ -8,7 +8,7 @@ if {
 }
 s6-notice "Compiling the service database"
 multisubstitute {
-    import -i S6_SERVICES_DIR
-    import -i S6_VERBOSITY
+    importas -i S6_SERVICES_DIR S6_SERVICES_DIR
+    importas -i S6_VERBOSITY S6_VERBOSITY
 }
 s6-rc-compile -v $S6_VERBOSITY $S6_COMPILED_DIR $S6_SERVICES_DIR

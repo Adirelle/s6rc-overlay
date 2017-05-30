@@ -3,5 +3,5 @@ importas -i DIR 1
 forbacktickx -p -0 FILE {
     s6-ls -0 -a $DIR
 }
-import -u FILE
+importas -u FILE FILE
 s6-rmrf ${DIR}/${FILE}

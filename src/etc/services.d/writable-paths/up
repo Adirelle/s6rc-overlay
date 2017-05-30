@@ -1,8 +1,8 @@
 with-contenv -ew
 multisubstitute {
     importas -D "" UNSPLITTED WRITABLE_PATHS
-    import -sd":" WRITABLE_PATHS
-    import -D "" WRITABLE_USER
+    importas -sd":" WRITABLE_PATHS WRITABLE_PATHS
+    importas -D "" WRITABLE_USER WRITABLE_USER
 }
 if -t {
     s6-test -n $UNSPLITTED -a -n $WRITABLE_USER
@@ -10,7 +10,7 @@ if -t {
 if {
     s6-notice "Making ${UNSPLITTED} writable for ${WRITABLE_USER}"
     forx -p TARGET { $WRITABLE_PATHS }
-        import -u TARGET
+        importas -u TARGET TARGET
         if {
             if -t {
                 s6-test ! -e $TARGET
@@ -27,7 +27,7 @@ if {
         s6-logcmd
         setfacl -m u:${WRITABLE_USER}:rwX ${TARGET}
 }
-import -i S6_LAUNCH_ENV
+importas -i S6_LAUNCH_ENV S6_LAUNCH_ENV
 if {
     s6-rmrf ${S6_LAUNCH_ENV}/env/WRITABLE_PATHS
 }

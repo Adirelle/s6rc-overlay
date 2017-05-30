@@ -4,7 +4,7 @@ backtick -nD 255 EXITCODE {
     redirfd -r 0 .exitcode
     s6-cat
 }
-import -u EXITCODE
+importas -u EXITCODE EXITCODE
 foreground {
     if -n {
         wait -it 2000 { }

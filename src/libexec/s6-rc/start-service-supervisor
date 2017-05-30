@@ -1,5 +1,5 @@
 #!/bin/execlineb
-import -i S6_SCAN_DIR
+importas -i S6_SCAN_DIR S6_SCAN_DIR
 define FIFO ${S6_SCAN_DIR}/.s6-svscan/control
 if {
     if -t {
