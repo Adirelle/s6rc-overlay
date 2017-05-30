@@ -110,20 +110,22 @@ $(TEST_RESULTS): $(BUILD)/test-result-%: $(BUILD)/image-% $(shell find $(TESTS) 
 	tests/run-all $(IMAGE_SLUG):$* $(TEST_LABEL) $(TEST_ONLY)
 	touch $@
 
-push: $(PUSHES) $(BUILD)/pushed-latest
-
-$(BUILD)/pushed-latest: $(BUILD)/image-alpine | $(HOME)/.docker/config.json
-	@tools/printbanner "Pushing latest and $(TAG)"
-	docker tag $(IMAGE_SLUG):alpine $(IMAGE_SLUG):latest
-	docker push $(IMAGE_SLUG):latest
-	docker tag $(IMAGE_SLUG):alpine $(IMAGE_SLUG):$(TAG)
-	docker push $(IMAGE_SLUG):$(TAG)
-
 $(PUSHES): $(BUILD)/pushed-%: $(BUILD)/image-% | $(HOME)/.docker/config.json
 	@tools/printbanner "Pushing $* and $(TAG)-$*"
 	docker push $(IMAGE_SLUG):$*
 	docker tag $(IMAGE_SLUG):$* $(IMAGE_SLUG):$(TAG)-$*
 	docker push $(IMAGE_SLUG):$(TAG)-$*
+
+ifneq (,$(findstring alpine,$(DISTRIBS)))
+PUSHES += $(BUILD)/pushed-latest
+
+$(BUILD)/pushed-latest: $(BUILD)/pushed-alpine | $(HOME)/.docker/config.json
+	@tools/printbanner "Pushing latest"
+	docker tag $(IMAGE_SLUG):alpine $(IMAGE_SLUG):latest
+	docker push $(IMAGE_SLUG):latest
+endif
+
+push: $(PUSHES)
 
 $(HOME)/.docker/config.json:
 	mkdir -p $(@D)
