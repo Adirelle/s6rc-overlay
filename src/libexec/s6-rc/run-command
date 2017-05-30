@@ -1,5 +1,4 @@
 #!/bin/execlineb -S0
-s6-notice "Services started"
 if -nt {
     s6-test $# -eq 0
 }

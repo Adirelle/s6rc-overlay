@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+docker run --rm -e S6_TARGET= "$1" exit 0
+docker run --rm -e S6_TARGET=none "$1" exit 0
