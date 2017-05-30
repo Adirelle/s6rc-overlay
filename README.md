@@ -175,7 +175,7 @@ He is a list of environment variables that alters s6rc-overlay behavior:
 
 * `S6_VERBOSITY`: the verbosity of various s6-rc commands. Defaults to 1.
 
-* `S6_TARGET`: the service to bring up at startup. Defaults to `services`.
+* `S6_TARGET`: the service to bring up at startup. Defaults to `services`. If empty or set to `none`, services will not be started.
 
 * `S6_INIT_TIMEOUT`: the initialisation timeout (see s6-rc-init), in
 milliseconds. Defauts to 500ms.
