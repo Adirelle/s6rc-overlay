@@ -1,5 +1,9 @@
 FROM alpine
 
+# Required for the writable-path service
+RUN apk update \
+&&  apk add acl
+
 ENV S6_VERBOSITY=1 \
     S6_CONF_DIR=/etc/s6-rc \
     S6_RUN_DIR=/run/s6-rc \
