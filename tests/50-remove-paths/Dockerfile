@@ -1,6 +1,6 @@
 FROM -IMAGE-
 
-RUN mkdir /opt/to-remove-dir \
+RUN mkdir -p /opt/to-remove-dir \
 &&  touch /opt/to-remove-file /opt/exact-remove /opt/to-remove-dir/recursive
 
 ENV REMOVE_PATHS=/opt/to-remove-*:/opt/exact-remove
