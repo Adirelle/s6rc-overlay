@@ -1,0 +1,17 @@
+#!/bin/sh
+TARGET=$1
+
+mkdir -m 0755 $TARGET/contenv
+
+echo "cd `/bin/pwd`" > $TARGET/contenv/workdir
+
+echo "/bin/s6-envdir $2/env" > $TARGET/contenv/loadenv
+
+if test -n "$S6_USER"; then
+    homeof $S6_USER >$TARGET/env/HOME
+fi
+
+UID=`id -u $S6_USER`
+GID=`id -g $S6_USER`
+GIDLIST=`id -G $S6_USER | tr " " ,`
+echo "s6-applyuidgid -u $UID -g $GID -G $GIDLIST" > $TARGET/contenv/setuidgid

@@ -15,40 +15,36 @@ multisubstitute {
     importas -i LAUNCH_ENV S6_LAUNCH_ENV
     importas -uD $DO_ALL CLEAR_ENV ELGETOPT_c
     importas -uD $DO_ALL CD_WORKDIR ELGETOPT_w
-    importas -uD $DO_ALL SET_UID_GID ELGETOPT_u
+    importas -uD $DO_ALL AS_USER ELGETOPT_u
     importas -uD $DO_ALL LOAD_ENV ELGETOPT_e
 }
 backtick -n __APPLYUIDGID {
     if -t {
-        s6-test -n $SET_UID_GID
+        s6-test -n $AS_USER
     }
-    s6-envdir ${LAUNCH_ENV}/user
-    multisubstitute {
-        importas -i U UID
-        importas -i G GID
-        importas -i GL GIDLIST
-    }
-    s6-echo -- /bin/s6-applyuidgid -u $U -g $G -G $GL
+    redirfd -r 0 ${LAUNCH_ENV}/contenv/setuidgid
+    s6-cat
 }
 backtick -n __CDWORKDIR {
     if -t {
         s6-test -n $CD_WORKDIR
     }
-    s6-envdir ${LAUNCH_ENV}/user
-    importas -i WD WORKDIR
-    s6-echo -- /bin/cd $WD
+    redirfd -r 0 ${LAUNCH_ENV}/contenv/workdir
+    s6-cat
 }
 backtick -n __CLEARENV {
     if -t {
         s6-test -z $CLEAR_ENV
     }
-    s6-echo -- -oP
+    s6-echo --
+    -oP
 }
 backtick -n __ENVDIR {
     if -t {
         s6-test -n $LOAD_ENV
     }
-    s6-echo -- /bin/s6-envdir ${LAUNCH_ENV}/env
+    redirfd -r 0 ${LAUNCH_ENV}/contenv/loadenv
+    s6-cat
 }
 multisubstitute {
     importas -us __APPLYUIDGID __APPLYUIDGID
@@ -57,9 +53,9 @@ multisubstitute {
     importas -us __ENVDIR __ENVDIR
 }
 elgetpositionals
-$__APPLYUIDGID
 $__CDWORKDIR
 /bin/emptyenv
 $__CLEARENV
 $__ENVDIR
+$__APPLYUIDGID
 $@

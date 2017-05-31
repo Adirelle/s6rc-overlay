@@ -1,0 +1,8 @@
+#!/bin/execlineb
+importas -iu DIR 1
+if {
+    emptyenv -P
+    s6-dumpenv ${DIR}
+}
+elglob -0 S6_VARS ${DIR}/S6_*
+rm -f $S6_VARS

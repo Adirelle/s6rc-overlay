@@ -4,26 +4,23 @@ backtick -n __TMPLAUNCHENV {
 }
 multisubstitute {
     importas -u TMP __TMPLAUNCHENV
-    importas -i USERHOME HOME
     importas -D 1 VERBOSITY S6_VERBOSITY
-    importas -uD /etc/s6-rc CONF_DIR S6_CONF_DIR
-    importas -uD /run/s6-rc RUN_DIR S6_RUN_DIR
-    importas -uD /etc/services.d SERVICES_DIR S6_SERVICES_DIR
-    importas -uD 500 INIT_TIMEOUT S6_INIT_TIMEOUT
-    importas -uD 120000 START_TIMEOUT S6_START_TIMEOUT
-    importas -uD 5000 STOP_TIMEOUT S6_STOP_TIMEOUT
-    importas -uD services TARGET S6_TARGET
+    importas -D /etc/s6-rc CONF_DIR S6_CONF_DIR
+    importas -D /run/s6-rc RUN_DIR S6_RUN_DIR
+    importas -D /etc/services.d SERVICES_DIR S6_SERVICES_DIR
+    importas -D 500 INIT_TIMEOUT S6_INIT_TIMEOUT
+    importas -D 120000 START_TIMEOUT S6_START_TIMEOUT
+    importas -D 5000 STOP_TIMEOUT S6_STOP_TIMEOUT
+    importas -D services TARGET S6_TARGET
 }
 if {
     s6-mkdir -p -m 0755 $TMP
 }
 if {
-    unexport S6_USER
-    emptyenv -P
-    s6-dumpenv ${TMP}/env
+    /libexec/s6-rc/dump-env-vars ${TMP}/env
 }
 if {
-    /libexec/s6-rc/dump-user-env ${TMP}/user
+    /libexec/s6-rc/setup-contenv ${TMP} ${RUN_DIR}/launch
 }
 
 elgetpositionals
@@ -33,6 +30,8 @@ emptyenv
 
 /libexec/su-exec root:root
 cd /
+
+backtick -ni HOME { homeof root }
 
 export S6_CONF_DIR $CONF_DIR
 export S6_RUN_DIR $RUN_DIR
@@ -63,7 +62,12 @@ if {
     }
 
     if {
-        ln -snf ${LAUNCH_ENV}/env ${USERHOME}/.envdir
+        backtick -ni USERHOME {
+            redirfd -r 0 ${LAUNCH_ENV}/env/HOME
+            s6-cat
+        }
+        importas -u H USERHOME
+        ln -snf ${LAUNCH_ENV}/env ${H}/.envdir
     }
     if {
         s6-dumpenv /root/.envdir
