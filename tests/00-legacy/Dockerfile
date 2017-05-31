@@ -6,7 +6,11 @@ ADD root /tests/root
 ADD services.d/root-tests /etc/services.d/root-tests
 ADD check-env run-tests /bin/
 
-RUN adduser --home /home/docker --shell /bin/bash --disabled-password -gecos '' docker
+RUN if test -e /etc/alpine-release; then \
+        adduser -h /home/docker -s /bin/bash -D -g '' docker ; \
+    else \
+        adduser --home /home/docker -shell /bin/bash --disabled-password --gecos '' docker ; \
+    fi
 
 USER docker
 WORKDIR /tmp
