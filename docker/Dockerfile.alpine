@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM alpine
 
 ENV S6_VERBOSITY=1 \
     S6_CONF_DIR=/etc/s6-rc \
