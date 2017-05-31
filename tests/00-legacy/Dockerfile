@@ -5,6 +5,7 @@ ADD user /tests/user
 ADD root /tests/root
 ADD services.d/root-tests /etc/services.d/root-tests
 ADD check-env run-tests /bin/
+RUN chmod a+rx /bin/check-env /bin/run-tests /tests/user/* /tests/root/*
 
 RUN if test -e /etc/alpine-release; then \
         adduser -h /home/docker -s /bin/bash -D -g '' docker ; \

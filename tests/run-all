@@ -11,8 +11,9 @@ buildImage() {
         local DKFILE="$DIR/tmp-Dockerfile-$SLUG"
         TSTIMG="test-$SLUG"
         sed -e "/^FROM/s@-IMAGE-@$IMAGE@" "$DIR/Dockerfile" >"$DKFILE"
-        docker build --label "$LABEL" -t "$TSTIMG" -f "$DKFILE" "$DIR" >&2
-        echo "$TSTIMG"
+        if docker build --label "$LABEL" -t "$TSTIMG" -f "$DKFILE" "$DIR" >&2; then
+            echo "$TSTIMG"
+        fi
     else
         echo "$IMAGE"
     fi

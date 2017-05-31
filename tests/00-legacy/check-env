@@ -34,3 +34,4 @@ if {
     s6-logcmd
     s6-test $BAR = $EXPECTED_BAR
 }
+exit 0
