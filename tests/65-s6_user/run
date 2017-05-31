@@ -1,8 +1,17 @@
 #!/bin/bash
 set -e
+set -x
+IMAGE=$1
 
-docker run --rm --user root "$1" s6-logcmd sh -xc 's6-test `id -un` = root -a `id -gn` = root'
+dotest() {
+    local USR=$1 S6_USER=$2 UN=$3 GN=$4 _HOME=$5 OPTS="--rm"
+    [[ -n $USR ]] && OPTS="$OPTS --user $USR"
+    [[ -n $S6_USER ]] && OPTS="$OPTS -e S6_USER=$S6_USER"
+    docker run $OPTS $IMAGE s6-logcmd sh -xc 's6-test `id -un` = '$UN' -a  `id -gn` = '$GN' -a $HOME = '$_HOME
+}
 
-docker run --rm --user root -e S6_USER=daemon "$1" s6-logcmd sh -xc 's6-test `id -un` = daemon -a `id -gn` = daemon'
+dotest root ""   root root /root
+dotest root foo  foo  foo  /home/foo
 
-docker run --rm --user daemon -e S6_USER=root "$1" s6-logcmd sh -xc 's6-test `id -un` = root -a `id -gn` = root'
+dotest foo root root  root  /root
+dotest foo ""   foo foo /home/foo
