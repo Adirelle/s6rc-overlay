@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+F=$(mktemp)
+trap "rm $F" EXIT
+
+docker run --rm --user=daemon --env FOO=BAR "$1" env >"$F"
+
+grep -e '^FOO=BAR$' $F \
+&& ! grep -e '^[0-9#]=' $F \
+&& ! grep -e '^S6_.*=' $F
+
+
