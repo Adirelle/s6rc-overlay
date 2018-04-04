@@ -22,10 +22,10 @@ if {
             s6-test -d $TARGET
         } {
             s6-logcmd
-            setfacl -R -m u:${USER}:rwX -m d:u:${USER}:rwX ${TARGET}
+            setfacl -R -m u:${USER}:rwX -m d:u:${USER}:rwX -m mask:rwX -m d:mask:rwX ${TARGET}
         }
         s6-logcmd
-        setfacl -m u:${USER}:rwX ${TARGET}
+        setfacl -m u:${USER}:rwX -m mask:rwX ${TARGET}
 }
 importas -i LAUNCH_ENV S6_LAUNCH_ENV
 if {
