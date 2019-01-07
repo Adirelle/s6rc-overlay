@@ -19,6 +19,12 @@ script:
   - make test
 
 deploy:
+  - provider: script
+    on:
+      tags: true
+      branch: master
+    script: make push
+    skip_cleanup: true
   - provider: releases
     on:
       tags: true
@@ -31,12 +37,6 @@ deploy:
     overwrite: true
     api_key:
       secure: "Ix04nfE+2Pulc3G21ZS9piTVPQtoa+N8RJKa80aUt0+sKxbd4QaScW9Y+oJHjzRgVPwqwUb8fBEiCwRKzZqHn1ubiEGlz7axlxo4ve3R4zd/SwTe2OKkrqQHPzb5Ng/sJBLtN7399a5uMAN3UJIdaDHWqm4NNNBXoHNh0kZObIs3rdMftsRJKC1PdSNbotbM3ZHuPn6Lk9hammpfHxD1BjSge8L5tMZ18I1TwIqEbIfO86S7lvIuxuS5u7bek5n9eHht5pmcBRF7WGc3/2mqMekz6HLWgfGoA1z1C949WOkyKi3F844/qfULqpm23uoFi86mlgeTK6uBLtn4SwnXrXhLgVa+e4Sff0jXzviqwwqZKfI+ocrL/PfBsLBf4eoK/30nFuk2hZoFrS11MKkk3FtiE9tg+QxWuMSvf8FlIkXFJ5Zq+1z/V7ztGbxw8dT2c72ERgtsNmX2900xtKSh5xCWEcEy8rn2m8Usiu5sp80mG3eTr8co798XtUqznHt9rSjOIebH8UeKz2JQeZxolhCUnB0+hRdzv9KAM9k1L2fca2eDuYqExnbrePzV4MeTPelvFH6g+47FJtJXNdjJIbwWezCtFu/yn71intPr6B7vBrjq3Igsox4KL53xG70oDUP8IhSozJsdblTT25uK0bbVrVA5VbtCllCbh/bniHA="
-  - provider: script
-    on:
-      tags: true
-      branch: master
-    script: make push
-    skip_cleanup: true
 
 cache:
   directories:
